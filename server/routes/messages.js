@@ -6,7 +6,7 @@ router.get('/messages', (req, res, next) => {
   Message.findAll({})
   .then((response) => {
     console.log(response)
-    res.send('cool')});
+    res.send(response)});
 })
 
 module.exports = router;
