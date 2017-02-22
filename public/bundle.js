@@ -31016,11 +31016,12 @@
 	    key: 'change',
 	    value: function change(e) {
 	      //console.log(this.props.current.id)
-	      console.log(this.props);
+	      //console.log(this.props)
 	      if (this.props.current.id) {
 	        this.props.chaChange(e.target.value);
 	      }
 	      if (this.props.selector) {
+	        console.log(this.props.selector);
 	        this.props.changeType(e.target.value);
 	      }
 	    }
@@ -31032,7 +31033,7 @@
 	      // this.setState({toggle: newSwitch})
 	      this.props.toggler();
 	      this.props.selectBlock({});
-	      this.props.changeType('none');
+	      //this.props.changeType('none')
 	    }
 	  }, {
 	    key: 'render',
@@ -31173,21 +31174,22 @@
 	  return {
 	    selectedBlock: state.grid.selected,
 	    gridBlocks: state.grid.blocks,
-	    multi: state.grid.type
+	    multi: state.grid.type,
+	    select: state.grid.multi
 	
 	  };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
-	    clickedBlock: function clickedBlock(block, createNew, multi) {
+	    clickedBlock: function clickedBlock(block, createNew, multi, select) {
 	
 	      dispatch((0, _grid.selectBlock)(block));
 	      if (createNew) {
 	        dispatch((0, _grid.createBlock)(block));
 	      }
 	
-	      dispatch((0, _grid.changeType)(multi));
+	      if (select) dispatch((0, _grid.changeType)(multi));
 	    }
 	  };
 	};
@@ -31213,6 +31215,7 @@
 	    value: function handleClick(e) {
 	
 	      var theId = e.target.id;
+	      var select = this.props.select;
 	      var found = this.props.gridBlocks.filter(function (obj) {
 	        return obj.id === theId;
 	      });
@@ -31223,9 +31226,9 @@
 	          id: theId,
 	          type: null
 	        };
-	        this.props.clickedBlock(newBlock, true, newType);
+	        this.props.clickedBlock(newBlock, true, newType, select);
 	      } else {
-	        this.props.clickedBlock(found[0], false, newType);
+	        this.props.clickedBlock(found[0], false, newType, select);
 	      }
 	    }
 	  }, {
