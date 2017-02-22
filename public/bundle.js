@@ -23274,11 +23274,11 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _GridContainer = __webpack_require__(301);
+	var _GridContainer = __webpack_require__(302);
 	
 	var _GridContainer2 = _interopRequireDefault(_GridContainer);
 	
-	var _BlockContainer = __webpack_require__(304);
+	var _BlockContainer = __webpack_require__(301);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
@@ -23297,13 +23297,15 @@
 	        _react2.default.createElement(
 	          _reactRouter.Route,
 	          { path: '/grid', component: _GridContainer2.default },
-	          _react2.default.createElement(_reactRouter.Route, { path: ':id', component: _BlockContainer2.default })
+	          _react2.default.createElement(_reactRouter.Route, { path: '/grid/:Blockid', component: _BlockContainer2.default })
 	        ),
 	        _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/grid' })
 	      )
 	    )
 	  );
 	};
+	
+	//might not need :id route at all
 
 /***/ },
 /* 209 */
@@ -30820,7 +30822,7 @@
 	
 	var _SidebarContainer2 = _interopRequireDefault(_SidebarContainer);
 	
-	var _BlockContainer = __webpack_require__(304);
+	var _BlockContainer = __webpack_require__(301);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 
@@ -30854,7 +30856,7 @@
 /* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -30863,24 +30865,24 @@
 	exports.default = function (props) {
 	
 	  return _react2.default.createElement(
-	    'sidebar',
+	    "sidebar",
 	    null,
 	    _react2.default.createElement(
-	      'section',
+	      "section",
 	      null,
 	      _react2.default.createElement(
-	        'h4',
-	        { className: 'menu-item' },
-	        'hi'
+	        "h4",
+	        { className: "menu-item" },
+	        "hi"
 	      )
 	    ),
 	    _react2.default.createElement(
-	      'section',
+	      "section",
 	      null,
 	      _react2.default.createElement(
-	        'h4',
-	        { className: 'menu-item' },
-	        'hello'
+	        "h4",
+	        { className: "menu-item" },
+	        "hello"
 	      )
 	    )
 	  );
@@ -30889,9 +30891,7 @@
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouter = __webpack_require__(209);
-	
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
@@ -30912,7 +30912,75 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(302);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    current: state.grid.selected
+	  };
+	};
+	//dispatch 
+	
+	var BlockContainer = function (_Component) {
+	  _inherits(BlockContainer, _Component);
+	
+	  function BlockContainer() {
+	    _classCallCheck(this, BlockContainer);
+	
+	    return _possibleConstructorReturn(this, (BlockContainer.__proto__ || Object.getPrototypeOf(BlockContainer)).call(this));
+	  }
+	
+	  _createClass(BlockContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      console.log(this.props.current);
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h2',
+	          null,
+	          this.props.current.id
+	        ),
+	        _react2.default.createElement(
+	          'h3',
+	          null,
+	          this.props.current.type
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return BlockContainer;
+	}(_react.Component);
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(BlockContainer);
+
+/***/ },
+/* 302 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Grid = __webpack_require__(303);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -30998,7 +31066,7 @@
 	    key: 'render',
 	    value: function render() {
 	
-	      return _react2.default.createElement(_Grid2.default, { blocks: this.state, selectB: this.handleClick });
+	      return _react2.default.createElement(_Grid2.default, { blocks: this.state, id: this.props.selectedBlock.id, selectB: this.handleClick });
 	    }
 	  }]);
 	
@@ -31008,7 +31076,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(GridContainer);
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31021,7 +31089,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _block = __webpack_require__(303);
+	var _block = __webpack_require__(304);
 	
 	var _block2 = _interopRequireDefault(_block);
 	
@@ -31031,10 +31099,10 @@
 	
 	var Grid = function Grid(props) {
 	  console.log(props);
-	  var thegrid = makeGrid(props.blocks.width, props.selectB);
+	  var thegrid = makeGrid(props.blocks.width, props.id);
 	  return _react2.default.createElement(
 	    'table',
-	    { width: '100%', height: '70%' },
+	    { width: '100%', height: '70%', onClick: props.selectB },
 	    _react2.default.createElement(
 	      'tbody',
 	      null,
@@ -31045,7 +31113,7 @@
 	exports.default = Grid;
 	
 	
-	var makeGrid = function makeGrid(h, click) {
+	var makeGrid = function makeGrid(h, id) {
 	  var grid = getLength(h);
 	  console.log(grid);
 	  var newGrid = grid.map(function (row, i) {
@@ -31053,7 +31121,7 @@
 	      'tr',
 	      { key: i },
 	      grid.map(function (colomn, j) {
-	        return _react2.default.createElement(_block2.default, { handleClick: click, coor: i + ',' + j, key: i + ',' + j });
+	        return _react2.default.createElement(_block2.default, { id: id, coor: i + ',' + j, key: i + ',' + j });
 	      })
 	    );
 	  });
@@ -31072,7 +31140,7 @@
 	};
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31083,86 +31151,18 @@
 	
 	exports.default = function (props) {
 	  // console.log(props)
-	  return _react2.default.createElement(
-	    'th',
-	    { id: props.coor, onClick: props.handleClick, key: props.coor },
-	    _react2.default.createElement('div', { id: props.coor })
-	  );
+	  var isActive = props.id === props.coor;
+	  var type = false;
+	  return _react2.default.createElement('th', { className: isActive ? 'Active' : type ? 'no' : 'yes', id: props.coor, key: props.coor });
 	};
 	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 304 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
 	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
+	var _reactRouter = __webpack_require__(209);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    current: state.grid.selected
-	  };
-	};
-	//dispatch 
-	
-	var BlockContainer = function (_Component) {
-	  _inherits(BlockContainer, _Component);
-	
-	  function BlockContainer() {
-	    _classCallCheck(this, BlockContainer);
-	
-	    return _possibleConstructorReturn(this, (BlockContainer.__proto__ || Object.getPrototypeOf(BlockContainer)).call(this));
-	  }
-	
-	  _createClass(BlockContainer, [{
-	    key: 'render',
-	    value: function render() {
-	      console.log(this.props.current);
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'h2',
-	          null,
-	          this.props.current.id
-	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          this.props.current.type
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return BlockContainer;
-	}(_react.Component);
-	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(BlockContainer);
 
 /***/ },
 /* 305 */
