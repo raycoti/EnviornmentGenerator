@@ -29801,6 +29801,15 @@
 	    case CREATE_BLOCK:
 	      newState.blocks = [].concat(_toConsumableArray(newState.blocks), [action.selected]);
 	      break;
+	    case UPDATE_BLOCK:
+	      newState.selected.type = newState.selected.type = action.terrain;
+	      break;
+	    case CHANGE_TYPE:
+	      newState.type = action.newType;
+	      break;
+	    case TOGGLE:
+	      newState.multi = !newState.multi;
+	      break;
 	    default:
 	      return state;
 	  }
@@ -29811,22 +29820,44 @@
 	
 	var SELECT_BLOCK = 'SELECT_BLOCK';
 	var CREATE_BLOCK = 'CREATE_BLOCK';
+	var UPDATE_BLOCK = 'UPDATE_BLOCK';
+	var CHANGE_TYPE = 'CHANGE_TYPE';
+	var TOGGLE = 'TOGGLE';
 	var initialState = {
 	  selected: {},
-	  blocks: []
+	  blocks: [],
+	  type: 'none',
+	  multi: false
 	};
 	
+	var toggleMulti = exports.toggleMulti = function toggleMulti() {
+	  return {
+	    type: TOGGLE
+	  };
+	};
 	var selectBlock = exports.selectBlock = function selectBlock(block) {
 	  return {
 	    type: SELECT_BLOCK,
 	    selected: block
 	  };
 	};
-	
+	var selectType = exports.selectType = function selectType(newTerrain) {
+	  return {
+	    type: CHANGE_TYPE,
+	    newType: newTerrain
+	  };
+	};
 	var createBlock = exports.createBlock = function createBlock(block) {
 	  return {
 	    type: CREATE_BLOCK,
 	    selected: block
+	  };
+	};
+	
+	var changeType = exports.changeType = function changeType(newTerrain) {
+	  return {
+	    type: UPDATE_BLOCK,
+	    terrain: newTerrain
 	  };
 	};
 	/*block = {
@@ -30782,7 +30813,7 @@
 	exports.default = function (_ref) {
 	  var children = _ref.children;
 	
-	  console.log(children);
+	  //console.log(children)
 	  return _react2.default.createElement(
 	    'div',
 	    { id: 'main', className: 'container-fluid' },
@@ -30796,19 +30827,22 @@
 	      ),
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'col-md-3' },
+	        { className: 'col-md-5' },
 	        _react2.default.createElement(
 	          'h1',
 	          null,
 	          'SELECTED BLOCK'
 	        ),
-	        _react2.default.createElement(_BlockContainer2.default, null),
-	        '>'
-	      ),
+	        _react2.default.createElement(_BlockContainer2.default, null)
+	      )
+	    ),
+	    _react2.default.createElement(
+	      'div',
+	      { className: 'row' },
 	      _react2.default.createElement(
 	        'div',
-	        { className: 'col-md-2' },
-	        _react2.default.createElement(_SidebarContainer2.default, null)
+	        { className: 'col-md-12' },
+	        'yo yo'
 	      )
 	    )
 	  );
@@ -30912,6 +30946,12 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _BlockSelect = __webpack_require__(307);
+	
+	var _BlockSelect2 = _interopRequireDefault(_BlockSelect);
+	
+	var _grid = __webpack_require__(289);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -30920,12 +30960,34 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var newSwitch = false;
+	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    current: state.grid.selected
+	    current: state.grid.selected,
+	    type: state.grid.selected.type,
+	    selectType: state.grid.type,
+	    selector: state.grid.multi
+	  };
+	};
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    chaChange: function chaChange(type) {
+	      dispatch((0, _grid.changeType)(type));
+	    },
+	    changeType: function changeType(type) {
+	      dispatch((0, _grid.selectType)(type));
+	    },
+	    toggler: function toggler() {
+	      dispatch((0, _grid.toggleMulti)());
+	    },
+	    selectBlock: function selectBlock(block) {
+	      dispatch((0, _grid.selectBlock)(block));
+	    }
 	  };
 	};
 	//dispatch 
+	
 	
 	var BlockContainer = function (_Component) {
 	  _inherits(BlockContainer, _Component);
@@ -30933,26 +30995,65 @@
 	  function BlockContainer() {
 	    _classCallCheck(this, BlockContainer);
 	
-	    return _possibleConstructorReturn(this, (BlockContainer.__proto__ || Object.getPrototypeOf(BlockContainer)).call(this));
+	    var _this = _possibleConstructorReturn(this, (BlockContainer.__proto__ || Object.getPrototypeOf(BlockContainer)).call(this));
+	
+	    _this.change = _this.change.bind(_this);
+	    _this.multiToggle = _this.multiToggle.bind(_this);
+	    return _this;
 	  }
 	
 	  _createClass(BlockContainer, [{
+	    key: 'change',
+	    value: function change(e) {
+	      //console.log(this.props.current.id)
+	      console.log(this.props);
+	      if (this.props.current.id) {
+	        this.props.chaChange(e.target.value);
+	      }
+	      if (this.props.selector) {
+	        this.props.changeType(e.target.value);
+	      }
+	    }
+	  }, {
+	    key: 'multiToggle',
+	    value: function multiToggle() {
+	      newSwitch = !newSwitch;
+	      console.log(newSwitch);
+	      // this.setState({toggle: newSwitch})
+	      this.props.toggler();
+	      this.props.selectBlock({});
+	      this.props.changeType('none');
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log(this.props.current);
+	      //console.log(this.props.current)
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(
-	          'h2',
-	          null,
-	          this.props.current.id
+	          'div',
+	          { className: 'col-md-6' },
+	          _react2.default.createElement(
+	            'h2',
+	            null,
+	            'Current ',
+	            this.props.current.id
+	          ),
+	          _react2.default.createElement(
+	            'h3',
+	            null,
+	            'TYPE ',
+	            this.props.current.type
+	          ),
+	          this.props.selector && this.props.selectType !== 'none' ? _react2.default.createElement(
+	            'h2',
+	            null,
+	            'MULTITYPE: ',
+	            this.props.selectType
+	          ) : null
 	        ),
-	        _react2.default.createElement(
-	          'h3',
-	          null,
-	          this.props.current.type
-	        )
+	        _react2.default.createElement(_BlockSelect2.default, { toggle: this.multiToggle, handleChange: this.change })
 	      );
 	    }
 	  }]);
@@ -30960,7 +31061,7 @@
 	  return BlockContainer;
 	}(_react.Component);
 	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(BlockContainer);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BlockContainer);
 
 /***/ },
 /* 302 */
@@ -31001,18 +31102,23 @@
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
 	    selectedBlock: state.grid.selected,
-	    gridBlocks: state.grid.blocks
+	    gridBlocks: state.grid.blocks,
+	    multi: state.grid.type
 	
 	  };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	  return {
-	    clickedBlock: function clickedBlock(block, createNew) {
+	    clickedBlock: function clickedBlock(block, createNew, multi) {
 	
 	      dispatch((0, _grid.selectBlock)(block));
 	      if (createNew) {
 	        dispatch((0, _grid.createBlock)(block));
+	      }
+	      if (multi !== 'none') {
+	
+	        dispatch((0, _grid.changeType)(multi));
 	      }
 	    }
 	  };
@@ -31042,16 +31148,16 @@
 	      var found = this.props.gridBlocks.filter(function (obj) {
 	        return obj.id === theId;
 	      });
-	      console.log(found);
+	      var newType = this.props.multi;
 	      if (!found.length) {
 	        //if empty || not found
 	        var newBlock = {
 	          id: theId,
 	          type: null
 	        };
-	        this.props.clickedBlock(newBlock, true);
+	        this.props.clickedBlock(newBlock, true, newType);
 	      } else {
-	        this.props.clickedBlock(found[0], false);
+	        this.props.clickedBlock(found[0], false, newType);
 	      }
 	    }
 	  }, {
@@ -31066,7 +31172,7 @@
 	    key: 'render',
 	    value: function render() {
 	
-	      return _react2.default.createElement(_Grid2.default, { blocks: this.state, id: this.props.selectedBlock.id, selectB: this.handleClick });
+	      return _react2.default.createElement(_Grid2.default, { theType: this.props.multi, blocks: this.state, gridBlocks: this.props.gridBlocks, id: this.props.selectedBlock.id, selectB: this.handleClick });
 	    }
 	  }]);
 	
@@ -31097,9 +31203,16 @@
 	
 	var rows = [];
 	
+	var blockObj = function blockObj(blockArr) {
+	  return blockArr.reduce(function (acc, cur) {
+	    acc[cur.id] = { type: cur.type };
+	    return acc;
+	  }, {});
+	};
+	
 	var Grid = function Grid(props) {
-	  console.log(props);
-	  var thegrid = makeGrid(props.blocks.width, props.id);
+	  var theBlocks = blockObj(props.gridBlocks);
+	  var thegrid = makeGrid(props.blocks.width, props.id, theBlocks);
 	  return _react2.default.createElement(
 	    'table',
 	    { width: '100%', height: '70%', onClick: props.selectB },
@@ -31113,15 +31226,15 @@
 	exports.default = Grid;
 	
 	
-	var makeGrid = function makeGrid(h, id) {
+	var makeGrid = function makeGrid(h, id, t) {
 	  var grid = getLength(h);
-	  console.log(grid);
+	  //console.log(grid)
 	  var newGrid = grid.map(function (row, i) {
 	    return _react2.default.createElement(
 	      'tr',
 	      { key: i },
 	      grid.map(function (colomn, j) {
-	        return _react2.default.createElement(_block2.default, { id: id, coor: i + ',' + j, key: i + ',' + j });
+	        return _react2.default.createElement(_block2.default, { blocks: t, id: id, coor: i + ',' + j, key: i + ',' + j });
 	      })
 	    );
 	  });
@@ -31150,10 +31263,24 @@
 	});
 	
 	exports.default = function (props) {
-	  // console.log(props)
+	  //console.log('hi hel',props)
 	  var isActive = props.id === props.coor;
+	  //const exists = 
 	  var type = false;
-	  return _react2.default.createElement('th', { className: isActive ? 'Active' : type ? 'no' : 'yes', id: props.coor, key: props.coor });
+	  //console.log('size', props.blocks.length)
+	  var size = Object.keys(props.blocks).length;
+	  if (size) {
+	    if (props.blocks[props.coor]) {
+	      //console.log('theblocks',props.blocks[props.coor])
+	      var theType = props.blocks[props.coor].type;
+	      //console.log(theType)
+	      //console.log(typeof theType)
+	      type = true;
+	    }
+	  }
+	  //console.log('que',theType)
+	
+	  return _react2.default.createElement('th', { className: isActive ? 'Active' : type ? theType : 'none', id: props.coor, key: props.coor });
 	};
 	
 	var _react = __webpack_require__(1);
@@ -31262,6 +31389,67 @@
 	var jokes = 'Q: What did the Arctic wolf ask in the restaurant?\nA: Are these lemmings fresh off the tundra?\nQ: What did the big furry hat say to the warm woolly scarf?\nA: You hang around while I go on ahead.\nQ: What\'s the difference between an iceberg and a clothes brush?\nA: One crushes boats and the other brushes coats!\nQ: Why aren\'t penguins as lucky as Arctic murres?\nA: The poor old penguins can\'t go south for the winter. (they live in Antarctica)\nQ: How do you keep from getting cold feet?\nA: Don\'t go around BRRfooted!\nQ: Why is the slippery ice like music?\nA: If you don\'t C sharp - you\'ll B flat!\nQ: What\'s an ig?\nA: A snow house without a loo!\nQ: Where do seals go to see movies?\nA: The dive-in!\nQ: What kind of math do Snowy Owls like?\nA: Owlgebra.\nQ: What did the ocean say to the bergy bits?\nA: Nothing. It just waved.\nQ: What sits on the bottom of the cold Arctic Ocean and shakes?\nA: A nervous wreck.\nQ: How do you know if there\'s a snowman in your bed? \nA: You wake up wet!\nQ: How do you tell the difference between a walrus and an orange?\nA: Put your arms around it and squeeze it. If you don\'t get orange juice, it\'s a walrus.\nQ: What do chefs call "Baked Alaska" in Alaska?\nA: Baked Here\nQ: Getting a job in the Arctic in the winter is great! Why?\nA: When the days get short, you only have to work a 30 minute work week.\nQ: Why do seals swim in salt water?\nA: Because pepper water makes them sneeze!\nQ: Where can you find an ocean without any water?\nA: On a map!\nQ: What eight letters can you find in water from the Arctic Ocean?\nA: H to O! (H20)\nQ: Which side of an Arctic Tern has the most feathers?\nA: The outside!\nQ: What vegetable was forbidden on the ships of Arctic explorers?\nA: Leeks!\nQ: What happened when all the collected muskox wool was stolen?\nA: The police combed the area.\nQ: What did one Greenland Shark say to the other?\nA: Say, good lookin\'... didn\'t I meet you last night at the feeding frenzy?\nQ: What\'s a sign that you have an irrational fear of icebergs?\nA: You start having water-tight compartments installed in your pants.\nQ: What did the seal say when it swam into a concrete wall?\nA: Dam!\nQ: What do you call a reindeer with no eyes?\nA: I have no eye deer.\nQ: What do you get from sitting on the ice too long?\nA: Polaroids!\nQ: What did the detective in the Arctic say to the suspect?\nA: Where were you on the night of September to March?\nQ: What noise wakes you up at the North Pole around March 18?\nA: The crack of dawn!\nQ: If you live in an igloo, what\'s the worst thing about global warming?\nA: No privacy!\nQ: When are your eyes not eyes?\nA: When the cold Arctic wind makes them water!\nQ: What did the icy Arctic road say to the truck?\nA: Want to go for a spin?\nQ: What do Arctic hares use to keep their fur lookin\' spiffy?\nA: Hare spray!\nQ: What do you call ten Arctic hares hopping backwards through the snow together?\nA: A receding hare line.\nQ: Why are bad school grades like a shipwreck in the Arctic Ocean?\nA: They\'re both below C level!'.split('\n').reduce(function (all, row, i) {
 	  return i % 2 === 0 ? [].concat(_toConsumableArray(all), [{ q: row }]) : [].concat(_toConsumableArray(all.slice(0, all.length - 1)), [Object.assign({ a: row }, all[all.length - 1])]);
 	}, []);
+
+/***/ },
+/* 306 */,
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	  var onSub = props.handleSubmit;
+	  var onCha = props.handleChange;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'col-m-6' },
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'multiSelect'
+	    ),
+	    _react2.default.createElement(
+	      'label',
+	      { className: 'switch' },
+	      _react2.default.createElement('input', { onChange: props.toggle, type: 'checkbox' }),
+	      _react2.default.createElement('div', { className: 'slider round' })
+	    ),
+	    _react2.default.createElement('br', null),
+	    _react2.default.createElement('br', null),
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'Terrain Types'
+	    ),
+	    _react2.default.createElement(
+	      'select',
+	      { onChange: onCha },
+	      terainTypes.map(function (type) {
+	        return _react2.default.createElement(
+	          'option',
+	          { key: type, value: type },
+	          type
+	        );
+	      })
+	    )
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(209);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//
+	//this is a select  input stuff
+	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock'];
 
 /***/ }
 /******/ ]);
