@@ -1,3 +1,1 @@
-TODO: css classname colors for terrain types
-TODO: create drop down for selected BLOCK 
-TODO: this will now update type of selected block
+TODO: create submit component, on submit will save the level and send to database. redirect.

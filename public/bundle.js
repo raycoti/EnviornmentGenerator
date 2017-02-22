@@ -62,7 +62,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(305);
+	var _Root = __webpack_require__(306);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
@@ -23274,7 +23274,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _GridContainer = __webpack_require__(302);
+	var _GridContainer = __webpack_require__(303);
 	
 	var _GridContainer2 = _interopRequireDefault(_GridContainer);
 	
@@ -29810,6 +29810,8 @@
 	    case TOGGLE:
 	      newState.multi = !newState.multi;
 	      break;
+	    case CLEAR:
+	      return initialState;
 	    default:
 	      return state;
 	  }
@@ -29823,11 +29825,19 @@
 	var UPDATE_BLOCK = 'UPDATE_BLOCK';
 	var CHANGE_TYPE = 'CHANGE_TYPE';
 	var TOGGLE = 'TOGGLE';
+	var CLEAR = 'CLEAR';
+	
 	var initialState = {
 	  selected: {},
 	  blocks: [],
 	  type: 'none',
 	  multi: false
+	};
+	
+	var clearTable = exports.clearTable = function clearTable() {
+	  return {
+	    type: CLEAR
+	  };
 	};
 	
 	var toggleMulti = exports.toggleMulti = function toggleMulti() {
@@ -30946,7 +30956,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _BlockSelect = __webpack_require__(307);
+	var _BlockSelect = __webpack_require__(302);
 	
 	var _BlockSelect2 = _interopRequireDefault(_BlockSelect);
 	
@@ -31037,19 +31047,19 @@
 	          _react2.default.createElement(
 	            'h2',
 	            null,
-	            'Current ',
+	            'Current BLOCK: ',
 	            this.props.current.id
 	          ),
 	          _react2.default.createElement(
 	            'h3',
 	            null,
-	            'TYPE ',
+	            'Block TYPE: ',
 	            this.props.current.type
 	          ),
-	          this.props.selector && this.props.selectType !== 'none' ? _react2.default.createElement(
+	          this.props.selector ? _react2.default.createElement(
 	            'h2',
 	            null,
-	            'MULTITYPE: ',
+	            'SELECTED TYPE: ',
 	            this.props.selectType
 	          ) : null
 	        ),
@@ -31073,6 +31083,66 @@
 	  value: true
 	});
 	
+	exports.default = function (props) {
+	  var onSub = props.handleSubmit;
+	  var onCha = props.handleChange;
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'col-m-6' },
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'Select'
+	    ),
+	    _react2.default.createElement(
+	      'label',
+	      { className: 'switch' },
+	      _react2.default.createElement('input', { onChange: props.toggle, type: 'checkbox' }),
+	      _react2.default.createElement('div', { className: 'slider round' })
+	    ),
+	    _react2.default.createElement('br', null),
+	    _react2.default.createElement('br', null),
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'Terrain Types'
+	    ),
+	    _react2.default.createElement(
+	      'select',
+	      { onClick: onCha },
+	      terainTypes.map(function (type) {
+	        return _react2.default.createElement(
+	          'option',
+	          { key: type, value: type },
+	          type
+	        );
+	      })
+	    )
+	  );
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(209);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	//
+	//this is a select  input stuff
+	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock'];
+
+/***/ },
+/* 303 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _reactRedux = __webpack_require__(178);
@@ -31081,7 +31151,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(303);
+	var _Grid = __webpack_require__(304);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31116,10 +31186,8 @@
 	      if (createNew) {
 	        dispatch((0, _grid.createBlock)(block));
 	      }
-	      if (multi !== 'none') {
 	
-	        dispatch((0, _grid.changeType)(multi));
-	      }
+	      dispatch((0, _grid.changeType)(multi));
 	    }
 	  };
 	};
@@ -31133,8 +31201,8 @@
 	    var _this = _possibleConstructorReturn(this, (GridContainer.__proto__ || Object.getPrototypeOf(GridContainer)).call(this));
 	
 	    _this.state = {
-	      height: 10,
-	      width: 10
+	      height: 20,
+	      width: 20
 	    };
 	    _this.handleClick = _this.handleClick.bind(_this);
 	    return _this;
@@ -31182,7 +31250,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(GridContainer);
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31195,7 +31263,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _block = __webpack_require__(304);
+	var _block = __webpack_require__(305);
 	
 	var _block2 = _interopRequireDefault(_block);
 	
@@ -31215,7 +31283,7 @@
 	  var thegrid = makeGrid(props.blocks.width, props.id, theBlocks);
 	  return _react2.default.createElement(
 	    'table',
-	    { width: '100%', height: '70%', onClick: props.selectB },
+	    { width: '100%', height: '80%', onClick: props.selectB },
 	    _react2.default.createElement(
 	      'tbody',
 	      null,
@@ -31253,7 +31321,7 @@
 	};
 
 /***/ },
-/* 304 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31292,7 +31360,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31389,67 +31457,6 @@
 	var jokes = 'Q: What did the Arctic wolf ask in the restaurant?\nA: Are these lemmings fresh off the tundra?\nQ: What did the big furry hat say to the warm woolly scarf?\nA: You hang around while I go on ahead.\nQ: What\'s the difference between an iceberg and a clothes brush?\nA: One crushes boats and the other brushes coats!\nQ: Why aren\'t penguins as lucky as Arctic murres?\nA: The poor old penguins can\'t go south for the winter. (they live in Antarctica)\nQ: How do you keep from getting cold feet?\nA: Don\'t go around BRRfooted!\nQ: Why is the slippery ice like music?\nA: If you don\'t C sharp - you\'ll B flat!\nQ: What\'s an ig?\nA: A snow house without a loo!\nQ: Where do seals go to see movies?\nA: The dive-in!\nQ: What kind of math do Snowy Owls like?\nA: Owlgebra.\nQ: What did the ocean say to the bergy bits?\nA: Nothing. It just waved.\nQ: What sits on the bottom of the cold Arctic Ocean and shakes?\nA: A nervous wreck.\nQ: How do you know if there\'s a snowman in your bed? \nA: You wake up wet!\nQ: How do you tell the difference between a walrus and an orange?\nA: Put your arms around it and squeeze it. If you don\'t get orange juice, it\'s a walrus.\nQ: What do chefs call "Baked Alaska" in Alaska?\nA: Baked Here\nQ: Getting a job in the Arctic in the winter is great! Why?\nA: When the days get short, you only have to work a 30 minute work week.\nQ: Why do seals swim in salt water?\nA: Because pepper water makes them sneeze!\nQ: Where can you find an ocean without any water?\nA: On a map!\nQ: What eight letters can you find in water from the Arctic Ocean?\nA: H to O! (H20)\nQ: Which side of an Arctic Tern has the most feathers?\nA: The outside!\nQ: What vegetable was forbidden on the ships of Arctic explorers?\nA: Leeks!\nQ: What happened when all the collected muskox wool was stolen?\nA: The police combed the area.\nQ: What did one Greenland Shark say to the other?\nA: Say, good lookin\'... didn\'t I meet you last night at the feeding frenzy?\nQ: What\'s a sign that you have an irrational fear of icebergs?\nA: You start having water-tight compartments installed in your pants.\nQ: What did the seal say when it swam into a concrete wall?\nA: Dam!\nQ: What do you call a reindeer with no eyes?\nA: I have no eye deer.\nQ: What do you get from sitting on the ice too long?\nA: Polaroids!\nQ: What did the detective in the Arctic say to the suspect?\nA: Where were you on the night of September to March?\nQ: What noise wakes you up at the North Pole around March 18?\nA: The crack of dawn!\nQ: If you live in an igloo, what\'s the worst thing about global warming?\nA: No privacy!\nQ: When are your eyes not eyes?\nA: When the cold Arctic wind makes them water!\nQ: What did the icy Arctic road say to the truck?\nA: Want to go for a spin?\nQ: What do Arctic hares use to keep their fur lookin\' spiffy?\nA: Hare spray!\nQ: What do you call ten Arctic hares hopping backwards through the snow together?\nA: A receding hare line.\nQ: Why are bad school grades like a shipwreck in the Arctic Ocean?\nA: They\'re both below C level!'.split('\n').reduce(function (all, row, i) {
 	  return i % 2 === 0 ? [].concat(_toConsumableArray(all), [{ q: row }]) : [].concat(_toConsumableArray(all.slice(0, all.length - 1)), [Object.assign({ a: row }, all[all.length - 1])]);
 	}, []);
-
-/***/ },
-/* 306 */,
-/* 307 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	exports.default = function (props) {
-	  var onSub = props.handleSubmit;
-	  var onCha = props.handleChange;
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'col-m-6' },
-	    _react2.default.createElement(
-	      'h3',
-	      null,
-	      'multiSelect'
-	    ),
-	    _react2.default.createElement(
-	      'label',
-	      { className: 'switch' },
-	      _react2.default.createElement('input', { onChange: props.toggle, type: 'checkbox' }),
-	      _react2.default.createElement('div', { className: 'slider round' })
-	    ),
-	    _react2.default.createElement('br', null),
-	    _react2.default.createElement('br', null),
-	    _react2.default.createElement(
-	      'h3',
-	      null,
-	      'Terrain Types'
-	    ),
-	    _react2.default.createElement(
-	      'select',
-	      { onChange: onCha },
-	      terainTypes.map(function (type) {
-	        return _react2.default.createElement(
-	          'option',
-	          { key: type, value: type },
-	          type
-	        );
-	      })
-	    )
-	  );
-	};
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouter = __webpack_require__(209);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	//
-	//this is a select  input stuff
-	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock'];
 
 /***/ }
 /******/ ]);
