@@ -8,6 +8,9 @@ const User = require('./user');
 const Message = require('./message');
 const Reader = require('./reader');
 const Scene = require('./scene');
+const Block = require('./blocks')
+//Block.hasOne(Scene, {as: 'Level'});
+Scene.hasMany(Block);
 
 module.exports = {
-	User, Message, Reader, Scene}
+	User, Message, Reader, Scene, Block}

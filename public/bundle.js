@@ -62,7 +62,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(306);
+	var _Root = __webpack_require__(307);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
@@ -23274,11 +23274,11 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _GridContainer = __webpack_require__(303);
+	var _GridContainer = __webpack_require__(304);
 	
 	var _GridContainer2 = _interopRequireDefault(_GridContainer);
 	
-	var _BlockContainer = __webpack_require__(301);
+	var _BlockContainer = __webpack_require__(302);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
@@ -29777,13 +29777,14 @@
 
 /***/ },
 /* 289 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.submitLevel = exports.addToType = exports.changeType = exports.createBlock = exports.selectType = exports.selectBlock = exports.toggleMulti = exports.clearTable = undefined;
 	
 	exports.default = function () {
 	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -29814,6 +29815,12 @@
 	  return newState;
 	};
 	
+	var _axios = __webpack_require__(262);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	var SELECT_BLOCK = 'SELECT_BLOCK';
@@ -29823,6 +29830,7 @@
 	var ADD_TO_TYPE = 'ADD_TO_TYPE';
 	var SUBTRACT_TYPE = 'SUBTRACT_TYPE';
 	var TOGGLE = 'TOGGLE';
+	
 	// maybe one action creator that increases a type
 	// maybe another that decreases that type 
 	var CLEAR = 'CLEAR';
@@ -29878,6 +29886,31 @@
 	    increase: theType
 	  };
 	};
+	
+	var submitLevel = exports.submitLevel = function submitLevel(name, blocks) {
+	  console.log(blocks);
+	  return function (dispatch) {
+	    _axios2.default.post('api/scene', {
+	      name: name
+	    }).then(function (scene) {
+	      //      console.log(scene.data[0].id)
+	      var id = scene.data[0].id;
+	      console.log(id);
+	      var makeBlocks = [];
+	      for (var i = 0; i < blocks.length; i++) {
+	        makeBlocks.push(_axios2.default.post('/api/block', blocks[i]));
+	      }
+	
+	      Promise.all(makeBlocks).then(function () {
+	        dispatch(clearTable());
+	      });
+	      //api/block
+	      //axios post for each block
+	      //dispatch 
+	    });
+	  };
+	};
+	
 	/*block = {
 	  location
 	  terrain: {
@@ -30832,11 +30865,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _FooterContainer = __webpack_require__(310);
+	var _FooterContainer = __webpack_require__(299);
 	
 	var _FooterContainer2 = _interopRequireDefault(_FooterContainer);
 	
-	var _BlockContainer = __webpack_require__(301);
+	var _BlockContainer = __webpack_require__(302);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
@@ -30889,9 +30922,7 @@
 	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(app);
 
 /***/ },
-/* 299 */,
-/* 300 */,
-/* 301 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30908,7 +30939,279 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _BlockSelect = __webpack_require__(302);
+	var _LevelContainer = __webpack_require__(300);
+	
+	var _LevelContainer2 = _interopRequireDefault(_LevelContainer);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //TODO: 
+	
+	
+	var FooterContainer = function (_Component) {
+	  _inherits(FooterContainer, _Component);
+	
+	  function FooterContainer() {
+	    _classCallCheck(this, FooterContainer);
+	
+	    return _possibleConstructorReturn(this, (FooterContainer.__proto__ || Object.getPrototypeOf(FooterContainer)).call(this));
+	  }
+	
+	  _createClass(FooterContainer, [{
+	    key: 'render',
+	    value: function render() {
+	      console.log(this.props.path);
+	      var thePath = this.props.path;
+	      return thePath === '/grid' ? _react2.default.createElement(_LevelContainer2.default, null) : _react2.default.createElement(
+	        'div',
+	        null,
+	        'notGrid'
+	      );
+	    }
+	  }]);
+	
+	  return FooterContainer;
+	}(_react.Component);
+	
+	exports.default = FooterContainer;
+
+/***/ },
+/* 300 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _level = __webpack_require__(301);
+	
+	var _level2 = _interopRequireDefault(_level);
+	
+	var _grid = __webpack_require__(289);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var removeNone = function removeNone(blockArr) {
+	  var goodStuff = blockArr.filter(function (block) {
+	    return block.type !== 'none' && block.type !== null;
+	  });
+	  return goodStuff;
+	};
+	
+	var getBlocksWith = function getBlocksWith(type, blockArr) {
+	  var blocks = blockArr.filter(function (block) {
+	    return block.type === type;
+	  });
+	  return blocks;
+	};
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    blocks: state.grid.blocks,
+	    selected: state.grid.selected
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    submitTheLevel: function submitTheLevel(name, blocks) {
+	      dispatch((0, _grid.submitLevel)(name, blocks));
+	    }
+	  };
+	};
+	
+	var LevelContainer = function (_Component) {
+	  _inherits(LevelContainer, _Component);
+	
+	  function LevelContainer() {
+	    _classCallCheck(this, LevelContainer);
+	
+	    var _this = _possibleConstructorReturn(this, (LevelContainer.__proto__ || Object.getPrototypeOf(LevelContainer)).call(this));
+	
+	    _this.state = {
+	      inputValue: '',
+	      dirty: false
+	    };
+	    _this.handleChange = _this.handleChange.bind(_this);
+	    _this.handleSubmit = _this.handleSubmit.bind(_this);
+	    return _this;
+	  }
+	
+	  _createClass(LevelContainer, [{
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      var Value = e.target.value;
+	      this.setState({ inputValue: Value,
+	        dirty: true });
+	    }
+	  }, {
+	    key: 'handleSubmit',
+	    value: function handleSubmit(e) {
+	      e.preventDefault();
+	      //console.log(this.state.inputValue)
+	      var theBlocks = removeNone(this.props.blocks);
+	      //console.log(theBlocks)
+	      this.props.submitTheLevel(this.state.inputValue, theBlocks);
+	      //if (theBlocks.length){
+	      //console.log('you got stuff');
+	      //}
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var blocks = this.props.blocks;
+	      var notEmpty = removeNone(blocks).length !== 0;
+	      //console.log(notEmpty)
+	      var numKeys = getBlocksWith('key', blocks).length;
+	      var numGoals = getBlocksWith('goal', blocks).length;
+	      var numLocks = getBlocksWith('lock', blocks).length;
+	      var numStart = getBlocksWith('start', blocks).length;
+	      //console.log('keys equal locks?', numKeys === numLocks )
+	      var warning = '';
+	      var keyLocks = numKeys === numLocks;
+	      var goalAndStart = numStart === 1 && numGoals === 1;
+	      if (this.state.dirty && blocks.length) {
+	        if (!keyLocks) {
+	          warning = 'Number of Keys Must Equal number of Locks';
+	        } else if (!goalAndStart) {
+	          warning = 'must have start and goal, only one of each';
+	        }
+	      }
+	      return _react2.default.createElement(_level2.default, { warning: warning, handleChange: this.handleChange, inputValue: this.state.inputValue, handleSubmit: this.handleSubmit, warning2: goalAndStart });
+	    }
+	  }]);
+	
+	  return LevelContainer;
+	}(_react.Component);
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LevelContainer);
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Level = function Level(props) {
+	  var handleChange = props.handleChange,
+	      handleSubmit = props.handleSubmit,
+	      inputValue = props.inputValue,
+	      warning = props.warning,
+	      warning2 = props.warning2;
+	
+	  console.log(warning.length);
+	  return _react2.default.createElement(
+	    'div',
+	    { className: 'col-md-6' },
+	    _react2.default.createElement(
+	      'form',
+	      { className: 'form-horizontal', onSubmit: handleSubmit },
+	      _react2.default.createElement(
+	        'fieldset',
+	        null,
+	        _react2.default.createElement(
+	          'legend',
+	          null,
+	          'Create Level'
+	        ),
+	        warning.length > 1 && _react2.default.createElement(
+	          'div',
+	          { className: 'alert alert-warning' },
+	          warning
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          _react2.default.createElement(
+	            'label',
+	            { className: 'col-xs-2 control-label' },
+	            'Name'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-10' },
+	            _react2.default.createElement('input', {
+	              className: 'form-control',
+	              type: 'text',
+	              onChange: handleChange,
+	              value: inputValue
+	            })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-10 col-xs-offset-2' },
+	            _react2.default.createElement(
+	              'button',
+	              {
+	                type: 'submit',
+	                className: 'btn btn-success',
+	                disabled: !!warning || !warning2 || !inputValue },
+	              'Create Level'
+	            )
+	          )
+	        )
+	      )
+	    )
+	  );
+	};
+	
+	exports.default = Level;
+
+/***/ },
+/* 302 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _BlockSelect = __webpack_require__(303);
 	
 	var _BlockSelect2 = _interopRequireDefault(_BlockSelect);
 	
@@ -31028,7 +31331,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BlockContainer);
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31085,7 +31388,7 @@
 	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock'];
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31102,7 +31405,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(304);
+	var _Grid = __webpack_require__(305);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31208,7 +31511,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(GridContainer);
 
 /***/ },
-/* 304 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31221,7 +31524,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _block = __webpack_require__(305);
+	var _block = __webpack_require__(306);
 	
 	var _block2 = _interopRequireDefault(_block);
 	
@@ -31279,7 +31582,7 @@
 	};
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31318,7 +31621,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31415,267 +31718,6 @@
 	var jokes = 'Q: What did the Arctic wolf ask in the restaurant?\nA: Are these lemmings fresh off the tundra?\nQ: What did the big furry hat say to the warm woolly scarf?\nA: You hang around while I go on ahead.\nQ: What\'s the difference between an iceberg and a clothes brush?\nA: One crushes boats and the other brushes coats!\nQ: Why aren\'t penguins as lucky as Arctic murres?\nA: The poor old penguins can\'t go south for the winter. (they live in Antarctica)\nQ: How do you keep from getting cold feet?\nA: Don\'t go around BRRfooted!\nQ: Why is the slippery ice like music?\nA: If you don\'t C sharp - you\'ll B flat!\nQ: What\'s an ig?\nA: A snow house without a loo!\nQ: Where do seals go to see movies?\nA: The dive-in!\nQ: What kind of math do Snowy Owls like?\nA: Owlgebra.\nQ: What did the ocean say to the bergy bits?\nA: Nothing. It just waved.\nQ: What sits on the bottom of the cold Arctic Ocean and shakes?\nA: A nervous wreck.\nQ: How do you know if there\'s a snowman in your bed? \nA: You wake up wet!\nQ: How do you tell the difference between a walrus and an orange?\nA: Put your arms around it and squeeze it. If you don\'t get orange juice, it\'s a walrus.\nQ: What do chefs call "Baked Alaska" in Alaska?\nA: Baked Here\nQ: Getting a job in the Arctic in the winter is great! Why?\nA: When the days get short, you only have to work a 30 minute work week.\nQ: Why do seals swim in salt water?\nA: Because pepper water makes them sneeze!\nQ: Where can you find an ocean without any water?\nA: On a map!\nQ: What eight letters can you find in water from the Arctic Ocean?\nA: H to O! (H20)\nQ: Which side of an Arctic Tern has the most feathers?\nA: The outside!\nQ: What vegetable was forbidden on the ships of Arctic explorers?\nA: Leeks!\nQ: What happened when all the collected muskox wool was stolen?\nA: The police combed the area.\nQ: What did one Greenland Shark say to the other?\nA: Say, good lookin\'... didn\'t I meet you last night at the feeding frenzy?\nQ: What\'s a sign that you have an irrational fear of icebergs?\nA: You start having water-tight compartments installed in your pants.\nQ: What did the seal say when it swam into a concrete wall?\nA: Dam!\nQ: What do you call a reindeer with no eyes?\nA: I have no eye deer.\nQ: What do you get from sitting on the ice too long?\nA: Polaroids!\nQ: What did the detective in the Arctic say to the suspect?\nA: Where were you on the night of September to March?\nQ: What noise wakes you up at the North Pole around March 18?\nA: The crack of dawn!\nQ: If you live in an igloo, what\'s the worst thing about global warming?\nA: No privacy!\nQ: When are your eyes not eyes?\nA: When the cold Arctic wind makes them water!\nQ: What did the icy Arctic road say to the truck?\nA: Want to go for a spin?\nQ: What do Arctic hares use to keep their fur lookin\' spiffy?\nA: Hare spray!\nQ: What do you call ten Arctic hares hopping backwards through the snow together?\nA: A receding hare line.\nQ: Why are bad school grades like a shipwreck in the Arctic Ocean?\nA: They\'re both below C level!'.split('\n').reduce(function (all, row, i) {
 	  return i % 2 === 0 ? [].concat(_toConsumableArray(all), [{ q: row }]) : [].concat(_toConsumableArray(all.slice(0, all.length - 1)), [Object.assign({ a: row }, all[all.length - 1])]);
 	}, []);
-
-/***/ },
-/* 307 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _level = __webpack_require__(309);
-	
-	var _level2 = _interopRequireDefault(_level);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var removeNone = function removeNone(blockArr) {
-	  var goodStuff = blockArr.filter(function (block) {
-	    return block.type !== 'none' && block.type !== null;
-	  });
-	  return goodStuff;
-	};
-	
-	var getBlocksWith = function getBlocksWith(type, blockArr) {
-	  var blocks = blockArr.filter(function (block) {
-	    return block.type === type;
-	  });
-	  return blocks;
-	};
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    blocks: state.grid.blocks,
-	    selected: state.grid.selected
-	  };
-	};
-	
-	var LevelContainer = function (_Component) {
-	  _inherits(LevelContainer, _Component);
-	
-	  function LevelContainer() {
-	    _classCallCheck(this, LevelContainer);
-	
-	    var _this = _possibleConstructorReturn(this, (LevelContainer.__proto__ || Object.getPrototypeOf(LevelContainer)).call(this));
-	
-	    _this.state = {
-	      inputValue: '',
-	      dirty: false
-	    };
-	    _this.handleChange = _this.handleChange.bind(_this);
-	    _this.handleSubmit = _this.handleSubmit.bind(_this);
-	    return _this;
-	  }
-	
-	  _createClass(LevelContainer, [{
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      var Value = e.target.value;
-	      this.setState({ inputValue: Value,
-	        dirty: true });
-	    }
-	  }, {
-	    key: 'handleSubmit',
-	    value: function handleSubmit(e) {
-	      e.preventDefault();
-	      console.log(this.state.inputValue);
-	      var theBlocks = removeNone(this.props.blocks);
-	      console.log(theBlocks);
-	      if (theBlocks.length) {
-	        console.log('you got stuff');
-	      }
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var blocks = this.props.blocks;
-	      var notEmpty = removeNone(blocks).length !== 0;
-	      console.log(notEmpty);
-	      var numKeys = getBlocksWith('key', blocks).length;
-	      var numGoals = getBlocksWith('goal', blocks).length;
-	      var numLocks = getBlocksWith('lock', blocks).length;
-	      var numStart = getBlocksWith('start', blocks).length;
-	      console.log('keys equal locks?', numKeys === numLocks);
-	      var warning = '';
-	      var keyLocks = numKeys === numLocks;
-	      var goalAndStart = numStart === 1 && numGoals === 1;
-	      if (this.state.dirty && blocks.length) {
-	        if (!keyLocks) {
-	          warning = 'Number of Keys Must Equal number of Locks';
-	        } else if (!goalAndStart) {
-	          warning = 'must have start and goal, only one of each';
-	        }
-	      }
-	      return _react2.default.createElement(_level2.default, { warning: warning, handleChange: this.handleChange, inputValue: this.state.inputValue, handleSubmit: this.handleSubmit });
-	    }
-	  }]);
-	
-	  return LevelContainer;
-	}(_react.Component);
-	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(LevelContainer);
-
-/***/ },
-/* 308 */,
-/* 309 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var Level = function Level(props) {
-	  var handleChange = props.handleChange,
-	      handleSubmit = props.handleSubmit,
-	      inputValue = props.inputValue,
-	      warning = props.warning;
-	
-	  console.log(warning.length);
-	  return _react2.default.createElement(
-	    'div',
-	    { className: 'col-md-6' },
-	    _react2.default.createElement(
-	      'form',
-	      { className: 'form-horizontal', onSubmit: handleSubmit },
-	      _react2.default.createElement(
-	        'fieldset',
-	        null,
-	        _react2.default.createElement(
-	          'legend',
-	          null,
-	          'Create Level'
-	        ),
-	        warning.length > 1 && _react2.default.createElement(
-	          'div',
-	          { className: 'alert alert-warning' },
-	          warning
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          _react2.default.createElement(
-	            'label',
-	            { className: 'col-xs-2 control-label' },
-	            'Name'
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-10' },
-	            _react2.default.createElement('input', {
-	              className: 'form-control',
-	              type: 'text',
-	              onChange: handleChange,
-	              value: inputValue
-	            })
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-10 col-xs-offset-2' },
-	            _react2.default.createElement(
-	              'button',
-	              {
-	                type: 'submit',
-	                className: 'btn btn-success',
-	                disabled: !!warning || !inputValue },
-	              'Create Level'
-	            )
-	          )
-	        )
-	      )
-	    )
-	  );
-	};
-	
-	exports.default = Level;
-
-/***/ },
-/* 310 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _LevelContainer = __webpack_require__(307);
-	
-	var _LevelContainer2 = _interopRequireDefault(_LevelContainer);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //TODO: 
-	
-	
-	var FooterContainer = function (_Component) {
-	  _inherits(FooterContainer, _Component);
-	
-	  function FooterContainer() {
-	    _classCallCheck(this, FooterContainer);
-	
-	    return _possibleConstructorReturn(this, (FooterContainer.__proto__ || Object.getPrototypeOf(FooterContainer)).call(this));
-	  }
-	
-	  _createClass(FooterContainer, [{
-	    key: 'render',
-	    value: function render() {
-	      console.log(this.props.path);
-	      var thePath = this.props.path;
-	      return thePath === '/grid' ? _react2.default.createElement(_LevelContainer2.default, null) : _react2.default.createElement(
-	        'div',
-	        null,
-	        'notGrid'
-	      );
-	    }
-	  }]);
-	
-	  return FooterContainer;
-	}(_react.Component);
-	
-	exports.default = FooterContainer;
 
 /***/ }
 /******/ ]);
