@@ -9,7 +9,8 @@ const Message = require('./message');
 const Reader = require('./reader');
 const Scene = require('./scene');
 const Block = require('./blocks')
-//Block.hasOne(Scene, {as: 'Level'});
+Block.belongsTo(Scene);
+
 Scene.hasMany(Block);
 
 module.exports = {

@@ -29827,8 +29827,6 @@
 	var CREATE_BLOCK = 'CREATE_BLOCK';
 	var UPDATE_BLOCK = 'UPDATE_BLOCK';
 	var CHANGE_TYPE = 'CHANGE_TYPE';
-	var ADD_TO_TYPE = 'ADD_TO_TYPE';
-	var SUBTRACT_TYPE = 'SUBTRACT_TYPE';
 	var TOGGLE = 'TOGGLE';
 	
 	// maybe one action creator that increases a type
@@ -29898,7 +29896,8 @@
 	      console.log(id);
 	      var makeBlocks = [];
 	      for (var i = 0; i < blocks.length; i++) {
-	        makeBlocks.push(_axios2.default.post('/api/block', blocks[i]));
+	        var newBlock = Object.assign({ level: id }, blocks[i]);
+	        makeBlocks.push(_axios2.default.post('/api/block', newBlock));
 	      }
 	
 	      Promise.all(makeBlocks).then(function () {
