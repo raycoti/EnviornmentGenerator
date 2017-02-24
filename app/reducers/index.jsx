@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import gridReducer from './grid';
 import readerReducer from './readers';
+import levelReducer from './level'
 //const initialState = {}
 
 // const rootReducer = function(state = initialState, action) {
@@ -11,5 +12,6 @@ import readerReducer from './readers';
 
 export default combineReducers({
   grid: gridReducer,
-  reader: readerReducer
+  reader: readerReducer,
+  level: levelReducer,
 })
