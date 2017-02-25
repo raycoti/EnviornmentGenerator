@@ -62,7 +62,7 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _Root = __webpack_require__(309);
+	var _Root = __webpack_require__(312);
 	
 	var _Root2 = _interopRequireDefault(_Root);
 	
@@ -23270,27 +23270,27 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _app = __webpack_require__(298);
+	var _app = __webpack_require__(299);
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _GridContainer = __webpack_require__(304);
+	var _GridContainer = __webpack_require__(307);
 	
 	var _GridContainer2 = _interopRequireDefault(_GridContainer);
 	
-	var _BlockContainer = __webpack_require__(302);
+	var _BlockContainer = __webpack_require__(303);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
-	var _LevelsContainer = __webpack_require__(307);
+	var _LevelsContainer = __webpack_require__(310);
 	
 	var _LevelsContainer2 = _interopRequireDefault(_LevelsContainer);
 	
-	var _LoadContainer = __webpack_require__(308);
+	var _LoadContainer = __webpack_require__(311);
 	
 	var _LoadContainer2 = _interopRequireDefault(_LoadContainer);
 	
-	var _level = __webpack_require__(310);
+	var _level = __webpack_require__(291);
 	
 	var _grid = __webpack_require__(289);
 	
@@ -29751,11 +29751,11 @@
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
 	
-	var _reduxLogger = __webpack_require__(291);
+	var _reduxLogger = __webpack_require__(292);
 	
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 	
-	var _reduxThunk = __webpack_require__(297);
+	var _reduxThunk = __webpack_require__(298);
 	
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 	
@@ -29785,7 +29785,7 @@
 	
 	var _readers2 = _interopRequireDefault(_readers);
 	
-	var _level = __webpack_require__(310);
+	var _level = __webpack_require__(291);
 	
 	var _level2 = _interopRequireDefault(_level);
 	
@@ -30002,14 +30002,154 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.submitLevel = exports.loadAll = exports.loadLevel = undefined;
+	
+	exports.default = function () {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialSTATE;
+	  var action = arguments[1];
+	
+	  var newState = Object.assign({}, state);
+	  switch (action.type) {
+	    case CREATE_LEVEL:
+	      newState.levels = [].concat(_toConsumableArray(newState.levels), [action.level]);
+	      break;
+	    case SET_CURRENT:
+	      newState.currentLevel = action.level;
+	      break;
+	    case SET_LEVELS:
+	      newState.levels = action.levels;
+	      break;
+	    default:
+	      return state;
+	
+	  }
+	  return newState;
+	};
+	
+	var _grid = __webpack_require__(289);
+	
+	var _axios = __webpack_require__(262);
+	
+	var _axios2 = _interopRequireDefault(_axios);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var CREATE_LEVEL = 'CREATE_LEVEL';
+	var LOAD_LEVEL = 'LOAD_LEVEL';
+	var SAVE_LEVEL = 'SAVE_LEVEL';
+	var SET_CURRENT = 'SET_CURRENT';
+	var SET_LEVELS = 'SET_LEVELS';
+	
+	var initialSTATE = {
+	  name: '',
+	  levels: [],
+	  currentLevel: {
+	    blocks: []
+	  }
+	};
+	
+	var createLevel = function createLevel(level) {
+	  return {
+	    type: CREATE_LEVEL,
+	    level: level
+	  };
+	};
+	var setLevels = function setLevels(levels) {
+	  return {
+	    type: SET_LEVELS,
+	    levels: levels
+	  };
+	};
+	
+	var loadALevel = function loadALevel(newLevel) {
+	  return {
+	    type: SET_CURRENT,
+	    level: newLevel
+	  };
+	};
+	
+	var loadLevel = exports.loadLevel = function loadLevel(levelId, convert) {
+	  console.log('cool');
+	  return function (dispatch) {
+	    _axios2.default.get('/api/scene/' + levelId).then(function (level) {
+	      console.log('this is the loaded level', level);
+	      var theBlocks = level.data.blocks;
+	      var levelBlocks = theBlocks.reduce(function (acc, block) {
+	        var id = [block.xCoor, block.yCoor].join(',');
+	        acc.push({ id: id, type: block.terrainType });
+	        return acc;
+	      }, []);
+	      //console.log(levelBlocks);
+	      if (convert) {
+	        dispatch(loadALevel({ name: level.data.name,
+	          blocks: levelBlocks }));
+	        dispatch((0, _grid.loadBlocks)(levelBlocks));
+	      } else {
+	        dispatch(loadALevel(loadLevel));
+	      }
+	    });
+	  };
+	};
+	
+	var loadAll = exports.loadAll = function loadAll() {
+	  return function (dispatch) {
+	    _axios2.default.get('/api/scenes').then(function (scenes) {
+	      console.log('this is the response', scenes);
+	      dispatch(setLevels(scenes.data));
+	    });
+	  };
+	};
+	
+	var submitLevel = exports.submitLevel = function submitLevel(name, blocks) {
+	  console.log(blocks);
+	  return function (dispatch) {
+	    _axios2.default.post('api/scene', {
+	      name: name
+	    }).then(function (scene) {
+	      //      console.log(scene.data[0].id)
+	      var id = scene.data[0].id;
+	      console.log(id);
+	      var makeBlocks = [];
+	      for (var i = 0; i < blocks.length; i++) {
+	        var newBlock = Object.assign({ level: id }, blocks[i]);
+	        makeBlocks.push(_axios2.default.post('/api/block', newBlock));
+	      }
+	
+	      Promise.all(makeBlocks).then(function () {
+	        dispatch(createLevel());
+	      });
+	      //api/block
+	      //axios post for each block
+	      //dispatch 
+	    });
+	  };
+	};
+	
+	//TODO: current level has blocks,
+	//TODO: save level find out relations in database for this
+	//TODO: basically add and delete blocks to a level
+	//TODO: for each axios find or create blocks promise all respond with created
+	//TODO: when deleted make axios request to delete that thing
+
+/***/ },
+/* 292 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	var _core = __webpack_require__(292);
+	var _core = __webpack_require__(293);
 	
-	var _helpers = __webpack_require__(293);
+	var _helpers = __webpack_require__(294);
 	
-	var _defaults = __webpack_require__(296);
+	var _defaults = __webpack_require__(297);
 	
 	var _defaults2 = _interopRequireDefault(_defaults);
 	
@@ -30112,7 +30252,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30125,9 +30265,9 @@
 	
 	exports.printBuffer = printBuffer;
 	
-	var _helpers = __webpack_require__(293);
+	var _helpers = __webpack_require__(294);
 	
-	var _diff = __webpack_require__(294);
+	var _diff = __webpack_require__(295);
 	
 	var _diff2 = _interopRequireDefault(_diff);
 	
@@ -30254,7 +30394,7 @@
 	}
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30278,7 +30418,7 @@
 	var timer = exports.timer = typeof performance !== "undefined" && performance !== null && typeof performance.now === "function" ? performance : Date;
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30288,7 +30428,7 @@
 	});
 	exports.default = diffLogger;
 	
-	var _deepDiff = __webpack_require__(295);
+	var _deepDiff = __webpack_require__(296);
 	
 	var _deepDiff2 = _interopRequireDefault(_deepDiff);
 	
@@ -30377,7 +30517,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -30806,7 +30946,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -30857,7 +30997,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -30885,7 +31025,7 @@
 	exports['default'] = thunk;
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30898,15 +31038,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _FooterContainer = __webpack_require__(299);
+	var _FooterContainer = __webpack_require__(300);
 	
 	var _FooterContainer2 = _interopRequireDefault(_FooterContainer);
 	
-	var _BlockContainer = __webpack_require__(302);
+	var _BlockContainer = __webpack_require__(303);
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
-	var _SidebarContainer = __webpack_require__(312);
+	var _SidebarContainer = __webpack_require__(305);
 	
 	var _SidebarContainer2 = _interopRequireDefault(_SidebarContainer);
 	
@@ -30955,7 +31095,7 @@
 	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(app);
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30972,7 +31112,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _LevelContainer = __webpack_require__(300);
+	var _LevelContainer = __webpack_require__(301);
 	
 	var _LevelContainer2 = _interopRequireDefault(_LevelContainer);
 	
@@ -31013,7 +31153,7 @@
 	exports.default = FooterContainer;
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31030,13 +31170,13 @@
 	
 	var _reactRedux = __webpack_require__(178);
 	
-	var _level = __webpack_require__(301);
+	var _level = __webpack_require__(302);
 	
 	var _level2 = _interopRequireDefault(_level);
 	
 	var _grid = __webpack_require__(289);
 	
-	var _level3 = __webpack_require__(310);
+	var _level3 = __webpack_require__(291);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31147,7 +31287,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LevelContainer);
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31234,7 +31374,7 @@
 	exports.default = Level;
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31251,7 +31391,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _BlockSelect = __webpack_require__(303);
+	var _BlockSelect = __webpack_require__(304);
 	
 	var _BlockSelect2 = _interopRequireDefault(_BlockSelect);
 	
@@ -31381,7 +31521,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BlockContainer);
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31438,7 +31578,68 @@
 	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock', 'enemy'];
 
 /***/ },
-/* 304 */
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	exports.default = function (props) {
+	
+	  return props.path === '/grid' ? _react2.default.createElement(_BlockContainer2.default, null) : _react2.default.createElement(_LevelSelectContainer2.default, null);
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _BlockContainer = __webpack_require__(303);
+	
+	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
+	
+	var _LevelSelectContainer = __webpack_require__(306);
+	
+	var _LevelSelectContainer2 = _interopRequireDefault(_LevelSelectContainer);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {};
+	};
+	
+	var LevelSelectContainer = function LevelSelectContainer(props) {
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    ' we in here  '
+	  );
+	};
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps)(LevelSelectContainer);
+
+/***/ },
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31455,7 +31656,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(305);
+	var _Grid = __webpack_require__(308);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31561,7 +31762,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(GridContainer);
 
 /***/ },
-/* 305 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31574,7 +31775,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _block = __webpack_require__(306);
+	var _block = __webpack_require__(309);
 	
 	var _block2 = _interopRequireDefault(_block);
 	
@@ -31632,7 +31833,7 @@
 	};
 
 /***/ },
-/* 306 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31671,7 +31872,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 307 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31707,13 +31908,22 @@
 	    'div',
 	    null,
 	    'we here too',
+	    _react2.default.createElement(
+	      'a',
+	      { href: 'http://localhost:1337/game.html' },
+	      'thegame'
+	    ),
 	    props.levels.map(function (level) {
 	      return _react2.default.createElement(
-	        _reactRouter.Link,
-	        { to: '/level/' + level.id },
-	        ' LEVEL: ',
-	        level.id,
-	        ' '
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/level/' + level.id },
+	          ' LEVEL: ',
+	          level.name,
+	          ' '
+	        )
 	      );
 	    })
 	  );
@@ -31721,7 +31931,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LevelsContainer);
 
 /***/ },
-/* 308 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31738,7 +31948,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(305);
+	var _Grid = __webpack_require__(308);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31796,7 +32006,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoadContainer);
 
 /***/ },
-/* 309 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31893,208 +32103,6 @@
 	var jokes = 'Q: What did the Arctic wolf ask in the restaurant?\nA: Are these lemmings fresh off the tundra?\nQ: What did the big furry hat say to the warm woolly scarf?\nA: You hang around while I go on ahead.\nQ: What\'s the difference between an iceberg and a clothes brush?\nA: One crushes boats and the other brushes coats!\nQ: Why aren\'t penguins as lucky as Arctic murres?\nA: The poor old penguins can\'t go south for the winter. (they live in Antarctica)\nQ: How do you keep from getting cold feet?\nA: Don\'t go around BRRfooted!\nQ: Why is the slippery ice like music?\nA: If you don\'t C sharp - you\'ll B flat!\nQ: What\'s an ig?\nA: A snow house without a loo!\nQ: Where do seals go to see movies?\nA: The dive-in!\nQ: What kind of math do Snowy Owls like?\nA: Owlgebra.\nQ: What did the ocean say to the bergy bits?\nA: Nothing. It just waved.\nQ: What sits on the bottom of the cold Arctic Ocean and shakes?\nA: A nervous wreck.\nQ: How do you know if there\'s a snowman in your bed? \nA: You wake up wet!\nQ: How do you tell the difference between a walrus and an orange?\nA: Put your arms around it and squeeze it. If you don\'t get orange juice, it\'s a walrus.\nQ: What do chefs call "Baked Alaska" in Alaska?\nA: Baked Here\nQ: Getting a job in the Arctic in the winter is great! Why?\nA: When the days get short, you only have to work a 30 minute work week.\nQ: Why do seals swim in salt water?\nA: Because pepper water makes them sneeze!\nQ: Where can you find an ocean without any water?\nA: On a map!\nQ: What eight letters can you find in water from the Arctic Ocean?\nA: H to O! (H20)\nQ: Which side of an Arctic Tern has the most feathers?\nA: The outside!\nQ: What vegetable was forbidden on the ships of Arctic explorers?\nA: Leeks!\nQ: What happened when all the collected muskox wool was stolen?\nA: The police combed the area.\nQ: What did one Greenland Shark say to the other?\nA: Say, good lookin\'... didn\'t I meet you last night at the feeding frenzy?\nQ: What\'s a sign that you have an irrational fear of icebergs?\nA: You start having water-tight compartments installed in your pants.\nQ: What did the seal say when it swam into a concrete wall?\nA: Dam!\nQ: What do you call a reindeer with no eyes?\nA: I have no eye deer.\nQ: What do you get from sitting on the ice too long?\nA: Polaroids!\nQ: What did the detective in the Arctic say to the suspect?\nA: Where were you on the night of September to March?\nQ: What noise wakes you up at the North Pole around March 18?\nA: The crack of dawn!\nQ: If you live in an igloo, what\'s the worst thing about global warming?\nA: No privacy!\nQ: When are your eyes not eyes?\nA: When the cold Arctic wind makes them water!\nQ: What did the icy Arctic road say to the truck?\nA: Want to go for a spin?\nQ: What do Arctic hares use to keep their fur lookin\' spiffy?\nA: Hare spray!\nQ: What do you call ten Arctic hares hopping backwards through the snow together?\nA: A receding hare line.\nQ: Why are bad school grades like a shipwreck in the Arctic Ocean?\nA: They\'re both below C level!'.split('\n').reduce(function (all, row, i) {
 	  return i % 2 === 0 ? [].concat(_toConsumableArray(all), [{ q: row }]) : [].concat(_toConsumableArray(all.slice(0, all.length - 1)), [Object.assign({ a: row }, all[all.length - 1])]);
 	}, []);
-
-/***/ },
-/* 310 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.submitLevel = exports.loadAll = exports.loadLevel = undefined;
-	
-	exports.default = function () {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialSTATE;
-	  var action = arguments[1];
-	
-	  var newState = Object.assign({}, state);
-	  switch (action.type) {
-	    case CREATE_LEVEL:
-	      newState.levels = [].concat(_toConsumableArray(newState.levels), [action.level]);
-	      break;
-	    case SET_CURRENT:
-	      newState.currentLevel = action.level;
-	      break;
-	    case SET_LEVELS:
-	      newState.levels = action.levels;
-	      break;
-	    default:
-	      return state;
-	
-	  }
-	  return newState;
-	};
-	
-	var _grid = __webpack_require__(289);
-	
-	var _axios = __webpack_require__(262);
-	
-	var _axios2 = _interopRequireDefault(_axios);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
-	var CREATE_LEVEL = 'CREATE_LEVEL';
-	var LOAD_LEVEL = 'LOAD_LEVEL';
-	var SAVE_LEVEL = 'SAVE_LEVEL';
-	var SET_CURRENT = 'SET_CURRENT';
-	var SET_LEVELS = 'SET_LEVELS';
-	
-	var initialSTATE = {
-	  name: '',
-	  levels: [],
-	  currentLevel: {
-	    blocks: []
-	  }
-	};
-	
-	var createLevel = function createLevel(level) {
-	  return {
-	    type: CREATE_LEVEL,
-	    level: level
-	  };
-	};
-	var setLevels = function setLevels(levels) {
-	  return {
-	    type: SET_LEVELS,
-	    levels: levels
-	  };
-	};
-	
-	var loadALevel = function loadALevel(newLevel) {
-	  return {
-	    type: SET_CURRENT,
-	    level: newLevel
-	  };
-	};
-	
-	var loadLevel = exports.loadLevel = function loadLevel(levelId, convert) {
-	  console.log('cool');
-	  return function (dispatch) {
-	    _axios2.default.get('/api/scene/' + levelId).then(function (level) {
-	      console.log('this is the loaded level', level);
-	      var theBlocks = level.data.blocks;
-	      var levelBlocks = theBlocks.reduce(function (acc, block) {
-	        var id = [block.xCoor, block.yCoor].join(',');
-	        acc.push({ id: id, type: block.terrainType });
-	        return acc;
-	      }, []);
-	      //console.log(levelBlocks);
-	      if (convert) {
-	        dispatch(loadALevel({ name: level.data.name,
-	          blocks: levelBlocks }));
-	        dispatch((0, _grid.loadBlocks)(levelBlocks));
-	      } else {
-	        dispatch(loadALevel(loadLevel));
-	      }
-	    });
-	  };
-	};
-	
-	var loadAll = exports.loadAll = function loadAll() {
-	  return function (dispatch) {
-	    _axios2.default.get('/api/scenes').then(function (scenes) {
-	      console.log('this is the response', scenes);
-	      dispatch(setLevels(scenes.data));
-	    });
-	  };
-	};
-	
-	var submitLevel = exports.submitLevel = function submitLevel(name, blocks) {
-	  console.log(blocks);
-	  return function (dispatch) {
-	    _axios2.default.post('api/scene', {
-	      name: name
-	    }).then(function (scene) {
-	      //      console.log(scene.data[0].id)
-	      var id = scene.data[0].id;
-	      console.log(id);
-	      var makeBlocks = [];
-	      for (var i = 0; i < blocks.length; i++) {
-	        var newBlock = Object.assign({ level: id }, blocks[i]);
-	        makeBlocks.push(_axios2.default.post('/api/block', newBlock));
-	      }
-	
-	      Promise.all(makeBlocks).then(function () {
-	        dispatch(createLevel());
-	      });
-	      //api/block
-	      //axios post for each block
-	      //dispatch 
-	    });
-	  };
-	};
-	
-	//TODO: current level has blocks,
-	//TODO: save level find out relations in database for this
-	//TODO: basically add and delete blocks to a level
-	//TODO: for each axios find or create blocks promise all respond with created
-	//TODO: when deleted make axios request to delete that thing
-
-/***/ },
-/* 311 */,
-/* 312 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	exports.default = function (props) {
-	
-	  return props.thePath === '/grid' ? _react2.default.createElement(_BlockContainer2.default, null) : _react2.default.createElement(_LevelSelectContainer2.default, null);
-	};
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _BlockContainer = __webpack_require__(302);
-	
-	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
-	
-	var _LevelSelectContainer = __webpack_require__(313);
-	
-	var _LevelSelectContainer2 = _interopRequireDefault(_LevelSelectContainer);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 313 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {};
-	};
-	
-	var LevelSelectContainer = function LevelSelectContainer(props) {
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    ' we in here  '
-	  );
-	};
-	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps)(LevelSelectContainer);
 
 /***/ }
 /******/ ]);
