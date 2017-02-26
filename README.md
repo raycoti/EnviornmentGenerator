@@ -4,3 +4,5 @@ TODO: MAKE A HOMEPAGE COMPONENT
 
 
 FIXME: do not need load container at all homie
+
+TODO: konva js canvas extension 
