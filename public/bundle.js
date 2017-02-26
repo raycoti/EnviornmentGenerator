@@ -32135,6 +32135,12 @@
 	        ctx.rotate(this.angle);
 	        ctx.fillStyle = color;
 	        ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+	        // toggle below to load texture images 
+	        //  var base_image = new Image();
+	        //  base_image.src = '/terrain/grass1.png';
+	        // base_image.onload = function(){
+	        // ctx.drawImage(base_image,x,y, 30, 30);
+	        // }
 	        ctx.restore();
 	    };
 	    this.newPos = function () {
@@ -32151,7 +32157,7 @@
 	}
 	
 	function updateGameArea() {
-	    myGameArea.clear();
+	    myGameArea.clear(); //toggle this create still image 
 	    myGamePiece.moveAngle = 0;
 	    myGamePiece.speed = 0;
 	    if (myGameArea.keys && myGameArea.keys[37]) {
@@ -32184,7 +32190,7 @@
 	        rest[_key - 1] = arguments[_key];
 	    }
 	
-	    console.log(rest);
+	    //console.log(rest);
 	    var grass = rest.grass,
 	        rocks = rest.rocks,
 	        lava = rest.lava,
@@ -32195,14 +32201,12 @@
 	    //also return the starting location from the arr maybe using array.filter
 	    // then you can decide where your componenet will be rendered
 	
-	    console.log(rest[0]);
-	    console.log(grass);
-	    console.log(block.yCoor);
 	    myGamePiece = new component(30, 30, "grey", block.yCoor * 30, block.xCoor * 30);
 	    grassArr = renderType(rest[0], "green");
 	    waterArr = renderType(rest[4], "blue");
 	    rockArr = renderType(rest[1], 'brown');
 	    lavaArr = renderType(rest[2], "red");
+	    console.log('wtf');
 	
 	    myGameArea.start();
 	}
