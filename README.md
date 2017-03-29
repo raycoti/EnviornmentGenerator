@@ -1,10 +1,4 @@
-TODO: CREATE BUTTONS TO LINK TO EACH THING
-TODO: WORK ON SIDEBAR COMPONENT 
-TODO: MAKE A HOMEPAGE COMPONENT
+Enviornment Generator
 
-TODO: have something create a canvas, save the thing to a database that will now load the image instead
-
-
-FIXME: do not need load container at all homie
-
-TODO: konva js canvas extension 
+A React application template for creating levels for games that utilize a coordinate system. 
+Each block in the grid represents a game element at that coordinate, you can edit the properties array to give properties suitable for your game. You can edit the grid size 
