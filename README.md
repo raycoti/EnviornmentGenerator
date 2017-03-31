@@ -44,7 +44,7 @@ As the user selects
 
   This is a smart component that handles the creation of game elements based on user selection. 
 
-###Action Creators
+### Action Creators
 
 
 
