@@ -10,6 +10,7 @@
 <a name = "Overview"/>
 
 # Overview
+Currently refactoring to make this a more compatible tool to use. Feel free to clone this repo and contact me for any questions you have. 
 
 **Current functionality**
 
@@ -18,7 +19,7 @@ Out of the box this application allows users to create a level with types :
 None | Rock | Grass | Water | Lava | Goal | Start | Key | Lock | Enemy | Move |
 ---------|----------|---------|---------|----------|---------|----------|---------|---------|----------|---------|
 
-As the user selects 
+As the user selects squares on the grid they can apply one of these block types to that square. When stored to the database there will be block models that contain the xy coordinates of the blocks, the level they belong to and their block type. Games that pull from the database can use this information to generate their scenes  [Example](https://playcanv.as/p/C6vQ4bnn/).
 
 # Front End
 ## Redux Reducers and React Containers/Components  
@@ -45,7 +46,3 @@ As the user selects
   This is a smart component that handles the creation of game elements based on user selection. 
 
 ### Action Creators
-
-
-
-Each block in the grid represents a game element at that coordinate, you can edit the properties array to give properties suitable for your game. You can edit the grid size
