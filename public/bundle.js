@@ -30091,7 +30091,7 @@
 	        acc.push({ id: id, type: block.terrainType });
 	        return acc;
 	      }, []);
-	      console.log('whalougi', levelBlocks);
+	      console.log('blockObjects', levelBlocks);
 	      if (convert) {
 	        dispatch(loadALevel({ name: level.data.name,
 	          blocks: levelBlocks }));
@@ -31585,7 +31585,7 @@
 	
 	//
 	//this is a select  input stuff
-	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock', 'enemy'];
+	var terainTypes = ['none', 'rock', 'grass', 'water', 'lava', 'goal', 'start', 'key', 'lock', 'enemy', 'move'];
 
 /***/ },
 /* 305 */
@@ -31642,7 +31642,7 @@
 	  return _react2.default.createElement(
 	    'div',
 	    null,
-	    ' we in here  '
+	    '   '
 	  );
 	};
 	
@@ -31720,8 +31720,8 @@
 	    var _this = _possibleConstructorReturn(this, (GridContainer.__proto__ || Object.getPrototypeOf(GridContainer)).call(this));
 	
 	    _this.state = {
-	      height: 20,
-	      width: 20
+	      height: 50,
+	      width: 50
 	    };
 	    _this.handleClick = _this.handleClick.bind(_this);
 	    return _this;
@@ -32050,10 +32050,10 @@
 /* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	var _react = __webpack_require__(1);
@@ -32065,175 +32065,149 @@
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	var Game = function Game(props) {
-	  var theBlocks = props.level;
-	  console.log('our obj', theBlocks);
-	  console.log('filter?', findStart(theBlocks.blocks));
-	  var theGrass = findObjects(theBlocks.blocks, "grass");
-	  var theRocks = findObjects(theBlocks.blocks, "rock");
-	  var theLava = findObjects(theBlocks.blocks, "lava");
-	  var theEnemys = findObjects(theBlocks.blocks, "enemy");
-	  var theWater = findObjects(theBlocks.blocks, "water");
+	    //this is our stateless React component
+	    var theBlocks = props.level;
+	    var theGrass = findObjects(theBlocks.blocks, "grass");
+	    var theRocks = findObjects(theBlocks.blocks, "rock");
+	    var theLava = findObjects(theBlocks.blocks, "lava");
+	    var theEnemys = findObjects(theBlocks.blocks, "enemy");
+	    var theWater = findObjects(theBlocks.blocks, "water");
 	
-	  var startPoint = findObjects(theBlocks.blocks, 'start')[0];
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    ' ',
-	    startPoint ? startGame(startPoint, theGrass, theRocks, theLava, theEnemys, theWater) : null
-	  );
+	    var startPoint = findObjects(theBlocks.blocks, 'start')[0];
+	
+	    return _react2.default.createElement(
+	        "div",
+	        null,
+	        " ",
+	        startPoint ? startGame(startPoint, theGrass, theRocks, theLava, theEnemys, theWater) : null
+	    );
 	};
 	exports.default = Game;
 	
+	//__________________________________________________________
+	
 	var playGame = true;
-	var count = 0;
-	//FIXME: so this is how we change images for now 
+	//_________________________________________________________
 	var myGamePiece;
 	var ctx;
 	var grassArr;
 	var waterArr;
 	var lavaArr;
 	var rockArr;
-	var enemyArr;
 	
 	var myGameArea = {
-	  canvas: document.createElement("canvas"),
-	  start: function start() {
-	    this.canvas.width = 600;
-	    this.canvas.height = 600;
-	    this.context = this.canvas.getContext("2d");
-	    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-	    this.frameNo = 0;
-	    this.interval = setInterval(updateGameArea, 20);
-	    window.addEventListener('keydown', function (e) {
-	      e.preventDefault();
-	      myGameArea.keys = myGameArea.keys || [];
-	      myGameArea.keys[e.keyCode] = e.type == "keydown";
-	    });
-	    window.addEventListener('keyup', function (e) {
-	      myGameArea.keys[e.keyCode] = e.type == "keydown";
-	    });
-	  },
-	  stop: function stop() {
-	    clearInterval(this.interval);
-	  },
-	  clear: function clear() {
-	    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	  }
+	    canvas: document.createElement("canvas"),
+	    start: function start() {
+	        this.canvas.width = 600;
+	        this.canvas.height = 600;
+	        this.context = this.canvas.getContext("2d");
+	        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+	        this.frameNo = 0;
+	        this.interval = setInterval(updateGameArea, 20);
+	        window.addEventListener('keydown', function (e) {
+	            e.preventDefault();
+	            myGameArea.keys = myGameArea.keys || [];
+	            myGameArea.keys[e.keyCode] = e.type == "keydown";
+	        });
+	        window.addEventListener('keyup', function (e) {
+	            myGameArea.keys[e.keyCode] = e.type == "keydown";
+	        });
+	    },
+	    stop: function stop() {
+	        clearInterval(this.interval);
+	    },
+	    clear: function clear() {
+	        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	    }
 	};
 	
-	function component(width, height, color, x, y) {
+	function component(width, height, color, x, y, player) {
 	
-	  this.width = width;
-	  this.height = height;
-	  this.speed = 0;
-	  this.angle = 0;
-	  this.moveAngle = 0;
-	  this.x = x;
-	  this.y = y;
-	  this.update = function () {
-	    ctx = myGameArea.context;
-	    ctx.save();
-	    ctx.translate(this.x, this.y);
-	    ctx.rotate(this.angle);
-	    if (!playGame) {
-	      var base_image = new Image();
-	      base_image.src = '/terrain/grass1.png';
-	      base_image.onload = function () {
-	        ctx.drawImage(base_image, x, y, 30, 30);
-	      };
-	    } else {
-	      ctx.fillStyle = color;
-	      ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
-	    }
-	    // toggle below to load texture images 
-	
-	    ctx.restore();
-	  };
-	  this.newPos = function () {
-	    this.angle += this.moveAngle * Math.PI / 180;
-	    this.x += this.speed * Math.sin(this.angle);
-	    this.y -= this.speed * Math.cos(this.angle);
-	  };
+	    this.width = width;
+	    this.height = height;
+	    this.speed = 0;
+	    this.angle = 0;
+	    this.moveAngle = 0;
+	    this.x = x;
+	    this.y = y;
+	    this.update = function () {
+	        ctx = myGameArea.context;
+	        ctx.save();
+	        ctx.translate(this.x, this.y);
+	        ctx.rotate(this.angle);
+	        if (!playGame && !player) {
+	            var base_image = new Image();
+	            base_image.src = '/terrain/grass1.png';
+	            base_image.onload = function () {
+	                ctx.drawImage(base_image, x, y, 30, 30);
+	            };
+	        } else {
+	            ctx.fillStyle = color;
+	            ctx.fillRect(this.width / -2, this.height / -2, this.width, this.height);
+	        }
+	        ctx.restore();
+	    };
+	    this.newPos = function () {
+	        this.angle += this.moveAngle * Math.PI / 180;
+	        this.x += this.speed * Math.sin(this.angle);
+	        this.y -= this.speed * Math.cos(this.angle);
+	    };
 	}
 	
 	function updateTerrain(arr) {
-	  arr.forEach(function (terrain) {
-	    terrain.update();
-	  });
+	    arr.forEach(function (terrain) {
+	        terrain.update();
+	    });
 	}
 	
 	function updateGameArea() {
-	  if (playGame) {
 	    myGameArea.clear(); //toggle this create still image 
-	  }
-	  myGamePiece.moveAngle = 0;
-	  myGamePiece.speed = 0;
-	  if (myGameArea.keys && myGameArea.keys[37]) {
-	    myGamePiece.moveAngle = -2;
-	  }
-	  if (myGameArea.keys && myGameArea.keys[39]) {
-	    myGamePiece.moveAngle = 2;
-	  }
-	  if (myGameArea.keys && myGameArea.keys[38]) {
-	    myGamePiece.speed = 2;
-	  }
-	  if (myGameArea.keys && myGameArea.keys[40]) {
-	    myGamePiece.speed = -2;
-	  }
-	  var terrain = [].concat(_toConsumableArray(grassArr), _toConsumableArray(waterArr), _toConsumableArray(lavaArr), _toConsumableArray(rockArr));
-	  //count ++;
-	  // if (count < 10){
-	  updateTerrain(terrain);
-	  //}
-	  myGamePiece.newPos();
-	  myGamePiece.update();
+	
+	    myGamePiece.moveAngle = 0;
+	    myGamePiece.speed = 0;
+	    if (myGameArea.keys && myGameArea.keys[37]) {
+	        myGamePiece.moveAngle = -2;
+	    }
+	    if (myGameArea.keys && myGameArea.keys[39]) {
+	        myGamePiece.moveAngle = 2;
+	    }
+	    if (myGameArea.keys && myGameArea.keys[38]) {
+	        myGamePiece.speed = 2;
+	    }
+	    if (myGameArea.keys && myGameArea.keys[40]) {
+	        myGamePiece.speed = -2;
+	    }
+	    var terrain = [].concat(_toConsumableArray(grassArr), _toConsumableArray(waterArr), _toConsumableArray(lavaArr), _toConsumableArray(rockArr));
+	
+	    updateTerrain(terrain);
+	    myGamePiece.newPos();
+	    myGamePiece.update();
 	}
 	function renderType(arr, type) {
-	  var typeArr = [];
-	  arr.forEach(function (block) {
-	    var newEl = new component(30, 30, type, block.yCoor * 30, block.xCoor * 30);
-	    typeArr.push(newEl);
-	  });
-	  return typeArr;
+	    var typeArr = [];
+	    arr.forEach(function (block) {
+	        var newEl = new component(30, 30, type, block.yCoor * 30, block.xCoor * 30);
+	        typeArr.push(newEl);
+	    });
+	    return typeArr;
 	}
 	function startGame(block) {
-	  for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	    rest[_key - 1] = arguments[_key];
-	  }
+	    //const {grass, rocks, lava, enemy, water} = rest;
 	
-	  //console.log(rest);
-	  var grass = rest.grass,
-	      rocks = rest.rocks,
-	      lava = rest.lava,
-	      enemy = rest.enemy,
-	      water = rest.water;
-	  // obstacles = blocks // pass in the level blocks 
-	  //do a for loop that will create componenets on this thing 
-	  //also return the starting location from the arr maybe using array.filter
-	  // then you can decide where your componenet will be rendered
+	    myGamePiece = new component(30, 30, 'grey', block.yCoor * 30, block.xCoor * 30, true);
+	    grassArr = renderType(arguments.length <= 1 ? undefined : arguments[1], 'green');
+	    waterArr = renderType(arguments.length <= 5 ? undefined : arguments[5], 'blue');
+	    rockArr = renderType(arguments.length <= 2 ? undefined : arguments[2], 'brown');
+	    lavaArr = renderType(arguments.length <= 3 ? undefined : arguments[3], 'red');
 	
-	  myGamePiece = new component(30, 30, "grey", block.yCoor * 30, block.xCoor * 30);
-	  grassArr = renderType(rest[0], "green");
-	  waterArr = renderType(rest[4], "blue");
-	  rockArr = renderType(rest[1], 'brown');
-	  lavaArr = renderType(rest[2], "red");
-	  console.log('wtf');
-	
-	  myGameArea.start();
-	}
-	
-	function findStart(blocks) {
-	  var startObj = blocks.filter(function (block) {
-	    return block.terrainType === 'start';
-	  });
-	  return startObj;
+	    myGameArea.start();
 	}
 	
 	function findObjects(blocks, type) {
-	  var objArr = blocks.filter(function (block) {
-	    return block.terrainType === type;
-	  });
-	  return objArr;
+	    var objArr = blocks.filter(function (block) {
+	        return block.terrainType === type;
+	    });
+	    return objArr;
 	}
 
 /***/ },
