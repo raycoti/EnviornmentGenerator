@@ -1,9 +1,12 @@
 # Enviornment Generator
 **A React application for creating levels for games that utilize a coordinate system. You can set the grid size and properties appropritate for your game**
 
+### Example game
+[![game](./public/terrain/game.png)](https://playcanv.as/p/C6vQ4bnn/).
+
 # Table of Contents
 | [Overview](#Overview) | 
-[Set up](#scripts2) | 
+[Set up](#setup) | 
 [React Components](#react) | 
 [Models](#models) |
 
@@ -12,6 +15,11 @@
 # Overview
 Currently refactoring to make this a more compatible tool to use. Feel free to clone this repo and contact me for any questions you have. 
 
+## Installation
+* npm install
+* npm run build
+* npm run start
+
 **Current functionality**
 
 Out of the box this application allows users to create a level with types : 
@@ -19,7 +27,19 @@ Out of the box this application allows users to create a level with types :
 None | Rock | Grass | Water | Lava | Goal | Start | Key | Lock | Enemy | Move |
 ---------|----------|---------|---------|----------|---------|----------|---------|---------|----------|---------|
 
-As the user selects squares on the grid they can apply one of these block types to that square. When stored to the database there will be block models that contain the xy coordinates of the blocks, the level they belong to and their block type. Games that pull from the database can use this information to generate their scenes  [Example](https://playcanv.as/p/C6vQ4bnn/).
+As the user selects squares on the grid they can apply one of these block types to that square. When stored to the database there will be block models that contain the xy coordinates of the blocks, the level they belong to and their block type. Games that pull from the database can use this information to generate their scenes
+
+
+<a name = "setup"/>
+
+# Set Up 
+
+You can simply npm install this to have it running as is. You may also change the packedge JSON project name to the name of your own project. 
+
+
+
+
+<a name = "react"/>
 
 # Front End
 ## Redux Reducers and React Containers/Components  
@@ -45,4 +65,20 @@ As the user selects squares on the grid they can apply one of these block types 
 
   This is a smart component that handles the creation of game elements based on user selection. 
 
-### Action Creators
+### Reducers
+
+* **clearTable():** This action creator will clear the grid to its initial state.
+* **loadBlocks(blocks):** This action creator will take in an array of blocks and sets the state blocks to that array.
+* **toggleMulti():** This action creator will toggle wheter 
+* **selectBlock(block):**
+* **selectType(newTerrain):**
+* **createBlock(block):**
+* **changeType(newTerrain):**
+* **submitLevel(name,blocks):**
+
+
+
+
+<a name = "models"/>
+
+#  
