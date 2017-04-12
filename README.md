@@ -14,6 +14,8 @@
 
 # Overview
 Currently refactoring to make this a more compatible tool to use. Feel free to clone this repo and contact me for any questions you have. 
+## Requirments
+  * have postgres installed for database.
 
 ## Installation
 * npm install
