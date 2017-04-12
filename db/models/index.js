@@ -5,8 +5,6 @@
 	// This works if we all use the same Sequelize instance (instantiated in and exported from `/db/index.js`)
 
 const User = require('./user');
-const Message = require('./message');
-const Reader = require('./reader');
 const Scene = require('./scene');
 const Block = require('./blocks')
 Block.belongsTo(Scene);
@@ -14,4 +12,4 @@ Block.belongsTo(Scene);
 Scene.hasMany(Block);
 
 module.exports = {
-	User, Message, Reader, Scene, Block}
+	User, Scene, Block}
