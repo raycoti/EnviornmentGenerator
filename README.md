@@ -65,16 +65,16 @@ You can simply npm install this to have it running as is. You may also change th
 
   This is a smart component that handles the creation of game elements based on user selection. 
 
-### Reducers
+### Action Creators
 
 * **clearTable():** This action creator will clear the grid to its initial state.
 * **loadBlocks(blocks):** This action creator will take in an array of blocks and sets the state blocks to that array.
-* **toggleMulti():** This action creator will toggle wheter 
-* **selectBlock(block):**
-* **selectType(newTerrain):**
-* **createBlock(block):**
-* **changeType(newTerrain):**
-* **submitLevel(name,blocks):**
+* **toggleMulti():** This action creator toggles if clicking will automatically set block to selected type.
+* **selectBlock(block):** This action creator will set the selected block as the block that was clicked/passed in.
+* **selectType(newTerrain):** This action creator will set the type of the selected block to the terrain passed in.
+* **createBlock(block):** This action creator will create a new block in the state.
+* **changeType(newTerrain):** This action creator will update the terrain type of the selected block.
+* **submitLevel(name,blocks):**This action creator will save the level to the database. 
 
 
 
