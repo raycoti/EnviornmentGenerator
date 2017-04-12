@@ -1,6 +1,9 @@
 # Enviornment Generator
 **A React application for creating levels for games that utilize a coordinate system. You can set the grid size and properties appropritate for your game**
-[GAME EXAMPLE](https://playcanv.as/p/C6vQ4bnn/).
+
+### Example game
+[![game](./public/terrain/game.png)](https://playcanv.as/p/C6vQ4bnn/).
+
 # Table of Contents
 | [Overview](#Overview) | 
 [Set up](#setup) | 
@@ -25,8 +28,7 @@ None | Rock | Grass | Water | Lava | Goal | Start | Key | Lock | Enemy | Move |
 ---------|----------|---------|---------|----------|---------|----------|---------|---------|----------|---------|
 
 As the user selects squares on the grid they can apply one of these block types to that square. When stored to the database there will be block models that contain the xy coordinates of the blocks, the level they belong to and their block type. Games that pull from the database can use this information to generate their scenes
-# Example game
-[![game](./public/terrain/game.png)](https://playcanv.as/p/C6vQ4bnn/).
+
 
 <a name = "setup"/>
 
