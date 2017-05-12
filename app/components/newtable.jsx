@@ -11,7 +11,7 @@ const newTable= function(props) {
         <tr>
         {theGrid.map((colomn)=>{
         return(
-          <th> hi </th>
+          <th>  </th>
           )})}
         </tr>
         )})}

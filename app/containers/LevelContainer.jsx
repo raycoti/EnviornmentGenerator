@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
+
 import Level from '../components/level';
 import {clearTable} from '../reducers/grid'
 import {submitLevel} from '../reducers/level'
@@ -29,6 +30,7 @@ const mapDispatchToProps = (dispatch) => {
     submitTheLevel(name, blocks){
       dispatch(submitLevel(name, blocks))
       dispatch(clearTable())
+     
     }
   }
 }
@@ -58,6 +60,7 @@ class LevelContainer extends Component {
       inputValue: '',
       dirty: false,
     })
+   
     //if (theBlocks.length){
       //console.log('you got stuff');
     //}

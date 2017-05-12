@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-
+import {loadAll, loadLevel} from '../reducers/level';
 const mapStateToProps = (state) => {
   return {
     levels: state.level.levels,
@@ -10,23 +10,28 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    load(){
+      dispatch(loadAll())
+    }
   }
 }
 
-const LevelsContainer = (props) => {
+class LevelsContainer extends Component{
+  componentDidMount(){
+    
+    this.props.load();
+  }
+  render(){
 
-    console.log(props.levels)
   return (
     <div>
-      we here too
-      <a href="http://localhost:1337/game.html">thegame</a>
-      {props.levels.map((level)=>{
+      {this.props.levels.map((level)=>{
         return <div><Link to={ `/level/${level.id}`}> LEVEL: {level.name} </Link></div>
       })}
     </div>
 
 
   )
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LevelsContainer);

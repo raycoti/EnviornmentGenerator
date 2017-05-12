@@ -11,7 +11,7 @@ class FooterContainer extends Component {
     console.log(this.props.path)
     const thePath = this.props.path;
     return(
-      thePath === '/grid' ? (<LevelContainer />) : <div>notGrid</div>
+      thePath === '/grid' ? (<LevelContainer />) : <div></div>
     )
   }
 }

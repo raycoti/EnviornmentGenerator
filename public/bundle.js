@@ -23273,7 +23273,7 @@
 	
 	var _app2 = _interopRequireDefault(_app);
 	
-	var _GridContainer = __webpack_require__(306);
+	var _GridContainer = __webpack_require__(307);
 	
 	var _GridContainer2 = _interopRequireDefault(_GridContainer);
 	
@@ -23281,15 +23281,15 @@
 	
 	var _BlockContainer2 = _interopRequireDefault(_BlockContainer);
 	
-	var _LevelsContainer = __webpack_require__(309);
+	var _LevelsContainer = __webpack_require__(310);
 	
 	var _LevelsContainer2 = _interopRequireDefault(_LevelsContainer);
 	
-	var _LoadContainer = __webpack_require__(310);
+	var _LoadContainer = __webpack_require__(311);
 	
 	var _LoadContainer2 = _interopRequireDefault(_LoadContainer);
 	
-	var _GameContainer = __webpack_require__(311);
+	var _GameContainer = __webpack_require__(312);
 	
 	var _GameContainer2 = _interopRequireDefault(_GameContainer);
 	
@@ -29911,40 +29911,23 @@
 	  };
 	};
 	
-	// TODO: have it only clear the table and have level take care of axios stuff
-	
 	var submitLevel = exports.submitLevel = function submitLevel(name, blocks) {
-	  console.log(blocks);
 	  return function (dispatch) {
 	    _axios2.default.post('api/scene', {
 	      name: name
 	    }).then(function (scene) {
-	      //      console.log(scene.data[0].id)
 	      var id = scene.data[0].id;
-	      console.log(id);
 	      var makeBlocks = [];
 	      for (var i = 0; i < blocks.length; i++) {
 	        var newBlock = Object.assign({ level: id }, blocks[i]);
 	        makeBlocks.push(_axios2.default.post('/api/block', newBlock));
 	      }
-	
 	      Promise.all(makeBlocks).then(function () {
 	        dispatch(clearTable());
 	      });
-	      //api/block
-	      //axios post for each block
-	      //dispatch 
 	    });
 	  };
 	};
-	
-	/*block = {
-	  location
-	  terrain: {
-	    grass||water||rock||key||lock||reader
-	  }
-	}
-	*/
 
 /***/ },
 /* 290 */
@@ -29979,6 +29962,8 @@
 	  return newState;
 	};
 	
+	var _reactRouter = __webpack_require__(209);
+	
 	var _grid = __webpack_require__(289);
 	
 	var _axios = __webpack_require__(262);
@@ -29990,10 +29975,9 @@
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
 	var CREATE_LEVEL = 'CREATE_LEVEL';
-	var LOAD_LEVEL = 'LOAD_LEVEL';
-	var SAVE_LEVEL = 'SAVE_LEVEL';
 	var SET_CURRENT = 'SET_CURRENT';
 	var SET_LEVELS = 'SET_LEVELS';
+	
 	
 	var initialSTATE = {
 	  name: '',
@@ -30024,17 +30008,14 @@
 	};
 	
 	var loadLevel = exports.loadLevel = function loadLevel(levelId, convert) {
-	  console.log('cool');
 	  return function (dispatch) {
 	    _axios2.default.get('/api/scene/' + levelId).then(function (level) {
-	      console.log('this is the loaded level', level);
 	      var theBlocks = level.data.blocks;
 	      var levelBlocks = theBlocks.reduce(function (acc, block) {
 	        var id = [block.xCoor, block.yCoor].join(',');
 	        acc.push({ id: id, type: block.terrainType });
 	        return acc;
 	      }, []);
-	      console.log('blockObjects', levelBlocks);
 	      if (convert) {
 	        dispatch(loadALevel({ name: level.data.name,
 	          blocks: levelBlocks }));
@@ -30049,42 +30030,29 @@
 	var loadAll = exports.loadAll = function loadAll() {
 	  return function (dispatch) {
 	    _axios2.default.get('/api/scenes').then(function (scenes) {
-	      console.log('this is the response', scenes);
 	      dispatch(setLevels(scenes.data));
 	    });
 	  };
 	};
 	
 	var submitLevel = exports.submitLevel = function submitLevel(name, blocks) {
-	  console.log(blocks);
 	  return function (dispatch) {
 	    _axios2.default.post('api/scene', {
 	      name: name
 	    }).then(function (scene) {
-	      //      console.log(scene.data[0].id)
 	      var id = scene.data[0].id;
-	      console.log(id);
 	      var makeBlocks = [];
 	      for (var i = 0; i < blocks.length; i++) {
 	        var newBlock = Object.assign({ level: id }, blocks[i]);
 	        makeBlocks.push(_axios2.default.post('/api/block', newBlock));
 	      }
-	
 	      Promise.all(makeBlocks).then(function () {
 	        dispatch(createLevel());
+	        dispatch(loadAll());
 	      });
-	      //api/block
-	      //axios post for each block
-	      //dispatch 
 	    });
 	  };
 	};
-	
-	//TODO: current level has blocks,
-	//TODO: save level find out relations in database for this
-	//TODO: basically add and delete blocks to a level
-	//TODO: for each axios find or create blocks promise all respond with created
-	//TODO: when deleted make axios request to delete that thing
 
 /***/ },
 /* 291 */
@@ -31007,6 +30975,10 @@
 	
 	var _grid = __webpack_require__(289);
 	
+	var _navbar = __webpack_require__(306);
+	
+	var _navbar2 = _interopRequireDefault(_navbar);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -31029,6 +31001,7 @@
 	  return _react2.default.createElement(
 	    'div',
 	    { id: 'main', className: 'container-fluid' },
+	    _react2.default.createElement(_navbar2.default, null),
 	    _react2.default.createElement(
 	      'div',
 	      { onClick: function onClick() {
@@ -31092,11 +31065,7 @@
 	    value: function render() {
 	      console.log(this.props.path);
 	      var thePath = this.props.path;
-	      return thePath === '/grid' ? _react2.default.createElement(_LevelContainer2.default, null) : _react2.default.createElement(
-	        'div',
-	        null,
-	        'notGrid'
-	      );
+	      return thePath === '/grid' ? _react2.default.createElement(_LevelContainer2.default, null) : _react2.default.createElement('div', null);
 	    }
 	  }]);
 	
@@ -31205,6 +31174,7 @@
 	        inputValue: '',
 	        dirty: false
 	      });
+	
 	      //if (theBlocks.length){
 	      //console.log('you got stuff');
 	      //}
@@ -31601,6 +31571,63 @@
 	  value: true
 	});
 	
+	var _reactRouter = __webpack_require__(209);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var Navbar = function Navbar(props) {
+	  return _react2.default.createElement(
+	    'nav',
+	    { className: 'navbar navbar-fixed-top,' },
+	    _react2.default.createElement(
+	      'ul',
+	      { className: 'thelist' },
+	      _react2.default.createElement(
+	        'section',
+	        null,
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/grid' },
+	            'Grid'
+	          )
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'section',
+	        null,
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: '/levels', activeClassName: 'active' },
+	            'Levels'
+	          )
+	        )
+	      )
+	    )
+	  );
+	};
+	
+	exports.default = Navbar;
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _reactRedux = __webpack_require__(178);
@@ -31609,7 +31636,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(307);
+	var _Grid = __webpack_require__(308);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31715,7 +31742,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(GridContainer);
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31728,7 +31755,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _block = __webpack_require__(308);
+	var _block = __webpack_require__(309);
 	
 	var _block2 = _interopRequireDefault(_block);
 	
@@ -31786,7 +31813,7 @@
 	};
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31796,22 +31823,15 @@
 	});
 	
 	exports.default = function (props) {
-	  //console.log('hi hel',props)
 	  var isActive = props.id === props.coor;
-	  //const exists = 
 	  var type = false;
-	  //console.log('size', props.blocks.length)
 	  var size = Object.keys(props.blocks).length;
 	  if (size) {
 	    if (props.blocks[props.coor]) {
-	      //console.log('theblocks',props.blocks[props.coor])
 	      var theType = props.blocks[props.coor].type;
-	      //console.log(theType)
-	      //console.log(typeof theType)
 	      type = true;
 	    }
 	  }
-	  //console.log('que',theType)
 	
 	  return _react2.default.createElement('th', { className: isActive ? 'Active' : type ? theType : 'none', id: props.coor, key: props.coor });
 	};
@@ -31823,65 +31843,6 @@
 	var _reactRouter = __webpack_require__(209);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 309 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _reactRedux = __webpack_require__(178);
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactRouter = __webpack_require__(209);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var mapStateToProps = function mapStateToProps(state) {
-	  return {
-	    levels: state.level.levels
-	  };
-	};
-	
-	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {};
-	};
-	
-	var LevelsContainer = function LevelsContainer(props) {
-	
-	  console.log(props.levels);
-	  return _react2.default.createElement(
-	    'div',
-	    null,
-	    'we here too',
-	    _react2.default.createElement(
-	      'a',
-	      { href: 'http://localhost:1337/game.html' },
-	      'thegame'
-	    ),
-	    props.levels.map(function (level) {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/level/' + level.id },
-	          ' LEVEL: ',
-	          level.name,
-	          ' '
-	        )
-	      );
-	    })
-	  );
-	};
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LevelsContainer);
 
 /***/ },
 /* 310 */
@@ -31901,7 +31862,95 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Grid = __webpack_require__(307);
+	var _reactRouter = __webpack_require__(209);
+	
+	var _level = __webpack_require__(290);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    levels: state.level.levels
+	  };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    load: function load() {
+	      dispatch((0, _level.loadAll)());
+	    }
+	  };
+	};
+	
+	var LevelsContainer = function (_Component) {
+	  _inherits(LevelsContainer, _Component);
+	
+	  function LevelsContainer() {
+	    _classCallCheck(this, LevelsContainer);
+	
+	    return _possibleConstructorReturn(this, (LevelsContainer.__proto__ || Object.getPrototypeOf(LevelsContainer)).apply(this, arguments));
+	  }
+	
+	  _createClass(LevelsContainer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	
+	      this.props.load();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        this.props.levels.map(function (level) {
+	          return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              _reactRouter.Link,
+	              { to: '/level/' + level.id },
+	              ' LEVEL: ',
+	              level.name,
+	              ' '
+	            )
+	          );
+	        })
+	      );
+	    }
+	  }]);
+	
+	  return LevelsContainer;
+	}(_react.Component);
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LevelsContainer);
+
+/***/ },
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _reactRedux = __webpack_require__(178);
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Grid = __webpack_require__(308);
 	
 	var _Grid2 = _interopRequireDefault(_Grid);
 	
@@ -31959,7 +32008,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoadContainer);
 
 /***/ },
-/* 311 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31974,7 +32023,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Game = __webpack_require__(312);
+	var _Game = __webpack_require__(313);
 	
 	var _Game2 = _interopRequireDefault(_Game);
 	
@@ -31990,7 +32039,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToPrps)(_Game2.default);
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";

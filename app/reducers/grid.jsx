@@ -74,44 +74,21 @@ export const changeType = (newTerrain) => ({
   terrain: newTerrain
 })
 
-
-// TODO: have it only clear the table and have level take care of axios stuff
-
-export const submitLevel = (name,blocks) => {
-  console.log(blocks)
+export const submitLevel = (name, blocks) => {
   return (dispatch) => {
   axios.post('api/scene', {
     name: name,
     })
-    .then((scene)=> {
-//      console.log(scene.data[0].id)
+    .then((scene) => {
       const id = scene.data[0].id
-      console.log(id);
-      const makeBlocks =[];
-      for (var i = 0; i <blocks.length; i++){
+      const makeBlocks = [];
+      for (var i = 0; i < blocks.length; i++){
         const newBlock = Object.assign({level: id}, blocks[i])
         makeBlocks.push(axios.post('/api/block', newBlock))
       }
-
-      Promise.all(makeBlocks).then(()=>{
+      Promise.all(makeBlocks).then(() => {
         dispatch(clearTable())
-
       })
-      //api/block
-      //axios post for each block
-      //dispatch 
     } )
   }
 }
-
-
-
-
-
-/*block = {
-  location
-  terrain: {
-    grass||water||rock||key||lock||reader
-  }
-}
-*/
