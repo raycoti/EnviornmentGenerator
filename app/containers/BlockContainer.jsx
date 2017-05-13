@@ -52,7 +52,6 @@ class BlockContainer extends Component {
   }
   multiToggle(){
     newSwitch = !newSwitch;
-    console.log(newSwitch)
    // this.setState({toggle: newSwitch})
     this.props.toggler();
     this.props.selectBlock({});

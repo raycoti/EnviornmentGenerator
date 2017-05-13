@@ -19,7 +19,6 @@ router.post('/block', (req, res, next) => {
       sceneId: req.body.level,
     })
   .then((block) => {
-    console.log('newBlock', block);
     res.send(block);
   })
 })

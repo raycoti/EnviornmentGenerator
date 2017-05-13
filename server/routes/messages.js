@@ -5,7 +5,6 @@ const Message = require('../../db/models').Message;
 router.get('/messages', (req, res, next) => {
   Message.findAll({})
   .then((response) => {
-    console.log(response)
     res.send(response)});
 })
 

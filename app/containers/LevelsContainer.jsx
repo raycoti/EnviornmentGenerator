@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
 
 class LevelsContainer extends Component{
   componentDidMount(){
-    
+
     this.props.load();
   }
   render(){
@@ -26,7 +26,8 @@ class LevelsContainer extends Component{
   return (
     <div>
       {this.props.levels.map((level)=>{
-        return <div><Link to={ `/level/${level.id}`}> LEVEL: {level.name} </Link></div>
+        return <div><Link to={ `/level/${level.id}`}> LEVEL: {level.name} </Link> <a href={`/api/scene/${level.id}`}  target="_blank">JSON</a>
+        </div>
       })}
     </div>
 

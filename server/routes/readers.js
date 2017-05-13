@@ -9,7 +9,6 @@ router.get('/readers', (req, res, next) => {
     include: []
   })
   .then((response) => {
-    console.log(response);
     res.send(response)
   })
 })
@@ -17,7 +16,6 @@ router.get('/readers', (req, res, next) => {
 router.post('/readers', (req, res, next) => {
   Reader.create(req.body) //reformated later to have proper posts
   .then((response) => {
-    console.log(response);
     res.send(response);
   })
 })

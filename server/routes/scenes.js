@@ -10,7 +10,6 @@ module.exports = router;
 router.get('/scenes', (req, res, next) => {
   Scene.findAll({})
   .then((response) => {
-    console.log(response);
     res.send(response)
   })
 })
@@ -26,7 +25,6 @@ router.get('/scene/:id', (req, res, next) => {
 })
 
 router.post('/scene', (req, res, next)=>{
-  console.log(req.body)
   const name = req.body.name;
   Scene.findOrCreate({
     where: req.body,
@@ -34,7 +32,6 @@ router.post('/scene', (req, res, next)=>{
   }
   )
   .then((scene)=> {
-    console.log(scene)
     res.send(scene)}
     );
   //const blocks = req.body.blocks;

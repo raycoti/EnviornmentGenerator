@@ -19,12 +19,10 @@ const loadScenes = ()=> {
 
 const onLevelEnter = function (nextRouterState) {
   const levelId = nextRouterState.params.id;
-  console.log(levelId)
   store.dispatch(loadLevel(levelId, true));
 };
 const onGameEnter = function (nextRouterState) {
   const levelId = nextRouterState.params.id;
-  console.log(levelId)
   store.dispatch(loadLevel(levelId, false));
 };
 

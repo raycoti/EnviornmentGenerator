@@ -31690,8 +31690,8 @@
 	    var _this = _possibleConstructorReturn(this, (GridContainer.__proto__ || Object.getPrototypeOf(GridContainer)).call(this));
 	
 	    _this.state = {
-	      height: 50,
-	      width: 50
+	      height: 12,
+	      width: 12
 	    };
 	    _this.handleClick = _this.handleClick.bind(_this);
 	    return _this;
@@ -31920,6 +31920,12 @@
 	              ' LEVEL: ',
 	              level.name,
 	              ' '
+	            ),
+	            ' ',
+	            _react2.default.createElement(
+	              'a',
+	              { href: '/api/scene/' + level.id, target: '_blank' },
+	              'JSON'
 	            )
 	          );
 	        })

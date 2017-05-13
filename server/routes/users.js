@@ -6,7 +6,6 @@ const User = require('../../db/models').User;
 router.get('/users', (req, res, next) => {
   User.findAll({})
   .then((response) => {
-    console.log(response);
     res.send(response);
   })
 })

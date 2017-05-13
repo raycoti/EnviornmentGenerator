@@ -40,8 +40,8 @@ class GridContainer extends Component {
   constructor(){
     super()
     this.state= {
-      height: 50,
-      width: 50,
+      height: 12,
+      width: 12,
         }
     this.handleClick = this.handleClick.bind(this);
   }

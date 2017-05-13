@@ -26,7 +26,6 @@ class LoadContainer extends Component {
 
   render(){
   //have to like totally 
-    console.log('current', this.props.level)
     const blocks = {
       selected: {},
       blocks: this.props.level.blocks,

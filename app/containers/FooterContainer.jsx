@@ -8,7 +8,6 @@ class FooterContainer extends Component {
   }
 
   render(){
-    console.log(this.props.path)
     const thePath = this.props.path;
     return(
       thePath === '/grid' ? (<LevelContainer />) : <div></div>

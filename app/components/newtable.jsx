@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 
 const newTable= function(props) {
-  console.log(props)
   return(
     <table>
     <tbody>

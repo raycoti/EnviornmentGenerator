@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 
 const Level = (props) => {
   const {handleChange, handleSubmit, inputValue, warning, warning2} = props;
-  console.log(warning.length)
   return (
     <div className="col-md-6">
       <form className="form-horizontal" onSubmit={handleSubmit}>
