@@ -77,7 +77,7 @@ You can simply npm install this to have it running as is. You may also change th
 * **selectType(newTerrain):** This action creator will set the type of the selected block to the terrain passed in.
 * **createBlock(block):** This action creator will create a new block in the state.
 * **changeType(newTerrain):** This action creator will update the terrain type of the selected block.
-* **submitLevel(name,blocks):**This action creator will save the level to the database. 
+* **submitLevel(name,blocks):** This action creator will save the level to the database. 
 
 
 
